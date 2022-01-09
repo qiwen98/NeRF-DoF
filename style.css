@@ -1,0 +1,12 @@
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+a {
+  color: blue;
+}
+.control-inactive button {
+  color: #888;
+}
