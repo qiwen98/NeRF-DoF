@@ -5,6 +5,8 @@ import Stats from 'three/examples//jsm/libs/stats.module.js';
 import { GUI } from 'three/examples//jsm/libs/lil-gui.module.min.js';
 import { OrbitControls } from 'three/examples//jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples//jsm/loaders/GLTFLoader.js';
+import { SVGLoader } from 'three/examples//jsm/loaders/SVGLoader.js';
+import { FontLoader } from 'three/examples//jsm/loaders/FontLoader.js';
 
 let scene, renderer, camera, stats;
 let model, skeleton, mixer, robotMixer, clock;
@@ -17,6 +19,12 @@ let bones=[] ;
 const geometry = new THREE.CylinderGeometry(5, 5, 5, 5, 15, 5, 30);
 let mesh;
 
+//variables for on panels control
+var clipAction;
+let singleStepMode = false;
+let sizeOfNextStep = 0;
+let MeshScale = 0.07;
+
 
 let currentBaseAction = 'idle';
 const allActions = [];
@@ -27,7 +35,7 @@ const baseActions = {
 };
 const additiveActions = {
   sneak_pose: { weight: 1 },
-  sad_pose: { weight: 1 },
+  sad_pose: { weight: 0 },
   agree: { weight: 0 },
   headShake: { weight: 0 }
 };
@@ -124,11 +132,12 @@ function init() {
     //create the panel
     createPanel();
 
+
+
     //load the bvh anim data; and also create the skeletons;
     loadBVHdata();
-
     //test
-
+    // loadBVHdata();
 
 
 
@@ -261,7 +270,7 @@ function setUpAnimation(head,tail)
 
 
      // create a ClipAction and set it to play
-     var clipAction = mixer.clipAction(clip);
+     clipAction = mixer.clipAction(clip);
      clipAction.play();
 }
 
@@ -312,33 +321,37 @@ function createSkinMesh()
 
   const rootBone = skeleton.bones[0];
   mesh.add(rootBone);
-
+  mesh.visible=false;
   // bind the skeleton to the mesh
 
   mesh.bind(skeleton);
   mesh.position.set(0,1.15,0);
-  mesh.scale.set(.07,.07,.07);
+  mesh.scale.set(MeshScale,MeshScale,MeshScale);
   
   scene.add(mesh);
   // scene.add( skeleton );
   var skeletonVis = new THREE.SkeletonHelper(mesh);
+  skeletonVis.material.linewidth = 1;
   skeletonVis.visible = true;
   scene.add(skeletonVis);
 }
 
-function createSkeleton(head,tail){
+
+
+
+function createSkeleton(head,tail,skeletonObj){
 
 
 
   //build root node
-  var rootNode = new THREE.Bone();
+  let rootNode = new THREE.Bone();
   rootNode.name = 'bone_0';
   bones.push(rootNode);
 
   // set root node position
-  var pos_x=animData[0][0][0];
-  var pos_y=animData[1][0][0];
-  var pos_z=animData[2][0][0];
+  let pos_x=animData[0][0][0];
+  let pos_y=animData[1][0][0];
+  let pos_z=animData[2][0][0];
   rootNode.position.set(pos_x,pos_y,pos_z);
 
   //sanity check
@@ -349,7 +362,7 @@ function createSkeleton(head,tail){
     // for loop // for the rest nodes
     for (let i = 1; i !== head.length+1; ++i)
     {
-        var new_node = new THREE.Bone();
+        let new_node = new THREE.Bone();
 
         //	parent.add(new_node)
         bones[head[i-1]].add(new_node)
@@ -363,7 +376,7 @@ function createSkeleton(head,tail){
 
         //add in location data
         //current relative pos equal to own pos - parent pos 
-        var PI =head[i-1];
+        let PI =head[i-1];
 
         pos_x=animData[0][i][0]-animData[0][PI][0];
         pos_y=animData[1][i][0]-animData[1][PI][0];
@@ -397,6 +410,9 @@ function createSkeleton(head,tail){
 }
 
 function loadBVHdata(){
+
+
+
       //load file
       const loader2 = new THREE.FileLoader();
       //load a text file and output the result to the console
@@ -412,9 +428,21 @@ function loadBVHdata(){
           const dimensions = [ animData.length, animData[0].length ,animData[0][0].length];
           console.log( dimensions);
 
-          //connection array;
-          var head=[0,1,2,3,4,5,0,7,8,9,10,11,0, 13,14,15,16,17,18,15,20,21,22,23,24,25,23,27,15,29,30,31,32,33,34,32,36];
-          var tail=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37];
+           //connection array;
+          if(dimensions[1]===12)
+          {
+
+
+          }
+
+          else
+          {
+            var head=[0,1,2,3,4,5,0,7,8,9,10,11,0, 13,14,15,16,17,18,15,20,21,22,23,24,25,23,27,15,29,30,31,32,33,34,32,36];
+            var tail=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37];
+          }
+
+
+
           createSkeleton(head,tail);
           createSkinMesh();
           setUpAnimation(head,tail);
@@ -431,6 +459,8 @@ function loadBVHdata(){
         }
         );
 
+        
+
 }
 
 function createPanel() {
@@ -438,8 +468,12 @@ function createPanel() {
   const panel = new GUI({ width: 310 });
 
   const folder1 = panel.addFolder('Base Actions');
-  const folder2 = panel.addFolder('Additive Action Weights');
-  const folder3 = panel.addFolder('General Speed');
+  const folder2 = panel.addFolder( 'Activation/Deactivation' );
+  const folder3 = panel.addFolder('Additive Action Weights');
+  const folder4 = panel.addFolder('General Speed');
+  const folder5 = panel.addFolder('Scale and Pos');
+
+
 
   panelSettings = {
     'modify time scale': 1.0
@@ -465,12 +499,94 @@ function createPanel() {
 
   }
 
+  const settings ={
+    'deactivate all': deactivateAllActions,
+		'activate all': activateAllActions,
+    'pause/continue': pauseContinue,
+    'make single step': toSingleStepMode,
+    'modify step size': 0.05,
+    'set mesh scale': 0.07,
+    
+  };
+
+  folder2.add( settings, 'deactivate all' );
+  folder2.add( settings, 'activate all' );
+  folder2.add( settings, 'pause/continue' );
+  folder2.add( settings, 'make single step' );
+  folder2.add( settings, 'modify step size', 0.01, 0.1, 0.001 );
+  folder5.add( settings, 'set mesh scale', 0.01, 1, 0.01 ).onChange(setMeshScale);;
+  
+
+  function deactivateAllActions() {
+
+      clipAction.stop();
+
+  }
+
+  function activateAllActions() {
+
+    clipAction.play();
+
+  }
+
+  function pauseContinue() {
+
+    if ( singleStepMode ) {
+
+      singleStepMode = false;
+      unPauseAllActions();
+
+    } else {
+
+      if ( clipAction.paused ) {
+
+        unPauseAllActions();
+
+      } else {
+
+        pauseAllActions();
+
+      }
+
+    }
+
+  }
+
+  function pauseAllActions() {
+
+      clipAction.paused = true;
+
+  }
+
+  function unPauseAllActions() {
+
+      clipAction.paused = false;
+
+  }
+
+  function toSingleStepMode() {
+
+    unPauseAllActions();
+
+    singleStepMode = true;
+    sizeOfNextStep = settings[ 'modify step size' ];
+
+  }
+
+  function setMeshScale(scale) {
+
+    mesh.scale.set(scale,scale,scale);
+
+  }
+
+
+
   for (const name of Object.keys(additiveActions)) {
 
     const settings = additiveActions[name];
 
     panelSettings[name] = settings.weight;
-    folder2.add(panelSettings, name, 0.0, 1.0, 0.01).listen().onChange(function (weight) {
+    folder3.add(panelSettings, name, 0.0, 1.0, 0.01).listen().onChange(function (weight) {
 
       setWeight(settings.action, weight);
       settings.weight = weight;
@@ -479,11 +595,13 @@ function createPanel() {
 
   }
 
-  folder3.add(panelSettings, 'modify time scale', 0.0, 1.5, 0.01).onChange(modifyTimeScale);
+  folder4.add(panelSettings, 'modify time scale', 0.0, 1.5, 0.01).onChange(modifyTimeScale);
 
   folder1.open();
   folder2.open();
   folder3.open();
+  folder4.open();
+  folder5.open();
 
   crossFadeControls.forEach(function (control) {
 
@@ -669,7 +787,14 @@ function render() {
 
   // Get the time elapsed since the last frame, used for mixer update
 
-  const mixerUpdateDelta = clock.getDelta();
+  let mixerUpdateDelta = clock.getDelta();
+
+  if ( singleStepMode ) {
+
+    mixerUpdateDelta = sizeOfNextStep;
+    sizeOfNextStep = 0;
+
+  }
 
   // Update the animation mixer, the stats panel, and render this frame
 
