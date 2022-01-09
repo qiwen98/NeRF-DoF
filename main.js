@@ -26,7 +26,7 @@ const baseActions = {
   run: { weight: 1 }
 };
 const additiveActions = {
-  sneak_pose: { weight: 0 },
+  sneak_pose: { weight: 1 },
   sad_pose: { weight: 0 },
   agree: { weight: 0 },
   headShake: { weight: 0 }
