@@ -22,8 +22,8 @@ let currentBaseAction = 'idle';
 const allActions = [];
 const baseActions = {
   idle: { weight: 0 },
-  walk: { weight: 1 },
-  run: { weight: 0 }
+  walk: { weight: 0 },
+  run: { weight: 1 }
 };
 const additiveActions = {
   sneak_pose: { weight: 0 },
