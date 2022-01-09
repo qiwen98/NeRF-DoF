@@ -127,7 +127,7 @@ function init() {
     //load the bvh anim data; and also create the skeletons;
     loadBVHdata();
 
-    
+    //test
 
 
 
