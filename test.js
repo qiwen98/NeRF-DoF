@@ -46,6 +46,9 @@ init();
 function init() {
 
   const container = document.getElementById('container');
+  document.getElementById('file1').addEventListener('change', handleFileOneSelect, false);
+  document.getElementById('file2').addEventListener('change', handleFileTwoSelect, false);
+
   clock = new THREE.Clock();
 
   scene = new THREE.Scene();
@@ -169,6 +172,8 @@ function init() {
   window.addEventListener('resize', onWindowResize);
 
 }
+
+
 
 function setUpAnimation(head,tail)
 {
@@ -429,7 +434,7 @@ function loadBVHdata(){
           console.log( dimensions);
 
            //connection array;
-          if(skeletonObj.is_hand)
+          if(dimensions[1]===12)
           {
 
 
@@ -458,6 +463,8 @@ function loadBVHdata(){
           console.error( 'An error happened' );
         }
         );
+
+        
 
 }
 
@@ -512,7 +519,9 @@ function createPanel() {
   folder2.add( settings, 'pause/continue' );
   folder2.add( settings, 'make single step' );
   folder2.add( settings, 'modify step size', 0.01, 0.1, 0.001 );
-  folder5.add( settings, 'set mesh scale', 0.01, 1, 0.01 ).onChange(setMeshScale);;
+  folder5.add( settings, 'set mesh scale', 0.01, 1, 0.01 ).onChange(setMeshScale);
+ 
+
   
 
   function deactivateAllActions() {
@@ -595,11 +604,15 @@ function createPanel() {
 
   folder4.add(panelSettings, 'modify time scale', 0.0, 1.5, 0.01).onChange(modifyTimeScale);
 
+
+  
+
   folder1.open();
   folder2.open();
   folder3.open();
   folder4.open();
   folder5.open();
+
 
   crossFadeControls.forEach(function (control) {
 
@@ -803,4 +816,27 @@ function render() {
 
   renderer.render(scene, camera);
 
+}
+
+
+function handleFileOneSelect(evt) {
+  var f = evt.target.files[0];
+  var reader = new FileReader();
+  reader.onload = (function(theFile) {
+    return function(e) {
+      console.log(reader.result);
+    };
+  })(f);
+  reader.readAsText(f);
+}
+
+function handleFileTwoSelect(evt) {
+  var f = evt.target.files[0];
+  var reader = new FileReader();
+  reader.onload = (function(theFile) {
+    return function(e) {
+      console.log(reader.result);
+    };
+  })(f);
+  reader.readAsText(f);
 }
