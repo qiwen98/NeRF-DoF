@@ -41,6 +41,144 @@ const additiveActions = {
 };
 let panelSettings, numAnimations;
 
+///////////////////////////////////////////////////////////////////////////
+const OBJExample = function ( elementToBindTo ) {
+
+  this.animData = null;
+  this.path = elementToBindTo;
+  this.head =null;
+  this.tail = null;
+  this.loadBVHdata();
+
+  this.bones=[];
+
+  this.scene = null;
+  this.cameraDefaults = {
+    posCamera: new THREE.Vector3( 0.0, 175.0, 500.0 ),
+    posCameraTarget: new THREE.Vector3( 0, 0, 0 ),
+    near: 0.1,
+    far: 10000,
+    fov: 45
+  };
+  this.camera = null;
+  this.cameraTarget = this.cameraDefaults.posCameraTarget;
+
+  this.controls = null;
+
+};
+
+OBJExample.prototype = {
+
+  constructor: OBJExample,
+
+  loadBVHdata:function (){
+
+    //load file
+    const loader = new THREE.FileLoader();
+    //load a text file and output the result to the console
+    loader.load(
+      // resource URL
+      this.path,
+      // onLoad callback
+      function ( data ) {
+        // output the text to the console
+        //console.log( data );
+        this.animData= JSON.parse(data); 
+        //console.log(animData)
+        const dimensions = [ animData.length, animData[0].length ,animData[0][0].length];
+        console.log( dimensions);
+
+         //connection array;
+        if(dimensions[1]===21)
+        {   //(3, 21, 24)
+          this.head   = [0,0,0,1,2,3,6, 6,7,9,10,11,13,14,15,17,18,19]
+          this.tail   = [5,9,17,2,3,4,5,7,8,10,11,12,14,15,16,18,19,20]
+
+        }
+
+        else
+        {
+          this. head=[0,1,2,3,4,5,0,7,8,9,10,11,0, 13,14,15,16,17,18,15,20,21,22,23,24,25,23,27,15,29,30,31,32,33,34,32,36];
+          this. tail=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37];
+        }
+
+
+
+        //this.createSkeleton();
+        // createSkinMesh();
+        // setUpAnimation(head,tail);
+        // create 
+        //scene.add( obj );
+      },
+      // onProgress callback
+      function ( xhr ) {
+        console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+      },
+      // onError callback
+      function ( err ) {
+        console.error( 'An error happened' );
+      }
+      );
+
+      
+
+  },
+
+  createSkeleton:function (){
+
+
+
+    //build root node
+    let rootNode = new THREE.Bone();
+    rootNode.name = 'bone_0';
+    bones.push(rootNode);
+  
+    // set root node position
+    let pos_x=animData[0][0][0];
+    let pos_y=animData[1][0][0];
+    let pos_z=animData[2][0][0];
+    rootNode.position.set(pos_x,pos_y,pos_z);
+  
+    //sanity check
+   // console.log(rootNode.position);
+   // console.log(animData[2][2][2033]);
+   // console.log(animData[0][1][0]);
+  
+      // for loop // for the rest nodes
+      for (let i = 1; i !== head.length+1; ++i)
+      {
+          let new_node = new THREE.Bone();
+  
+          //	parent.add(new_node)
+          bones[head[i-1]].add(new_node)
+          //console.log(bones[head[i]])
+          //add name
+          new_node.name = 'bone_'+tail[i-1];
+          //console.log(new_node.name)
+          //bones.push(new_bone)
+          bones.push(new_node)
+          //console.log(i)
+  
+          //add in location data
+          //current relative pos equal to own pos - parent pos 
+          let PI =head[i-1];
+  
+          pos_x=animData[0][i][0]-animData[0][PI][0];
+          pos_y=animData[1][i][0]-animData[1][PI][0];
+          pos_z=animData[2][i][0]-animData[2][PI][0];
+  
+  
+          //console.log(pos_x,pos_y,pos_z);
+          new_node.position.set(pos_x,pos_y,pos_z);
+          
+      }
+
+      
+  },
+
+  
+
+}
 init();
 
 function init() {
@@ -140,7 +278,12 @@ function init() {
     //load the bvh anim data; and also create the skeletons;
     loadBVHdata();
     //test
-    // loadBVHdata();
+    const Obj1 = new OBJExample( "models/files/hand_output.json");
+
+    
+
+
+    //Obj1.initGL();
 
 
 
@@ -344,7 +487,7 @@ function createSkinMesh()
 
 
 
-function createSkeleton(head,tail,skeletonObj){
+function createSkeleton(head,tail){
 
 
 
@@ -392,6 +535,11 @@ function createSkeleton(head,tail,skeletonObj){
         new_node.position.set(pos_x,pos_y,pos_z);
         
     }
+
+
+
+
+
     //     var skeleton = new THREE.SkeletonHelper(bones[0] );
     // skeleton.visible = true;
     // console.log(skeleton.color);
@@ -423,7 +571,7 @@ function loadBVHdata(){
       //load a text file and output the result to the console
       loader2.load(
         // resource URL
-        "models/files/output.json",
+        "models/files/hand_output.json",
         // onLoad callback
         function ( data ) {
           // output the text to the console
@@ -434,10 +582,10 @@ function loadBVHdata(){
           console.log( dimensions);
 
            //connection array;
-          if(dimensions[1]===12)
-          {
-
-
+          if(dimensions[1]===21)
+          {   //(3, 21, 24)
+            var head   = [ 0,  1,  2, 3, 0,  5,  6,  7,  0,9, 10, 11, 0, 13, 14, 15, 0,17, 18,19]
+            var tail   = [  1,  2,  3, 4, 5,  6,  7,  8, 9,10, 11, 12, 13, 14, 15, 16, 17,18, 19,20]
           }
 
           else
@@ -809,7 +957,7 @@ function render() {
 
   // Update the animation mixer, the stats panel, and render this frame
 
-  mixer.update(mixerUpdateDelta);
+   mixer.update(mixerUpdateDelta);
   robotMixer.update(mixerUpdateDelta);
 
   stats.update();
