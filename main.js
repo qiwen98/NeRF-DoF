@@ -10,7 +10,7 @@ import { FontLoader } from 'three/examples//jsm/loaders/FontLoader.js';
 //import {OBJExample} from './js/customObj.js';
 
 ///////////////////// custom obj //////////////////////////
-const OBJExample = function ( elementToBindTo,pos_x,pos_z ) {
+const OBJExample = function ( elementToBindTo,pos_x,pos_z,showVis ) {
 
 
   this.path= elementToBindTo;
@@ -20,6 +20,7 @@ const OBJExample = function ( elementToBindTo,pos_x,pos_z ) {
   this.head = null;
   this.tail = null;
   this.bones=[];
+  this.showVis=showVis;
 
   ////fake skin mesh geometry var
   this.fakeMeshGeometry = new THREE.CylinderGeometry(5, 5, 5, 5, 15, 5, 30);
@@ -248,7 +249,7 @@ OBJExample.prototype = {
     //scene.add( this.skeleton );
     this.boneVisHelper = new THREE.SkeletonHelper(this.mesh);
     this.boneVisHelper.material.linewidth = 1;
-    this.boneVisHelper.visible = true;
+    this.boneVisHelper.visible = this.showVis;
     scene.add(this.boneVisHelper);
   },
 
@@ -340,10 +341,9 @@ OBJExample.prototype = {
 ///////////////////// custom obj end //////////////////////////
 
 let scene, renderer, camera, stats;
-let model, skeleton, mixer, clock;
-
-const crossFadeControls = [];
-const mixers = [],actions=[];
+let model, skeleton, mixer, clock,crossFadeControls = [],demoControls=[];
+const mixers = [],actions=[],models=[];
+let  currentSkeletonType='human';
 
 let currentBaseAction = 'idle';
 const allActions = [];
@@ -367,12 +367,14 @@ let sizeOfNextStep = 0;
 /// init GLTF and GUI panels
 loadGLTF();
 /// load all demo data/s
-const app = new OBJExample( "models/files/hand_output.json",0.5,0);
+const app = new OBJExample( "models/files/hand_output.json",0.5,0,false);
 app.initContent();
+models.push(app);
 
 
-const app2 = new OBJExample( "models/files/output.json",-1,- 1);
+const app2 = new OBJExample( "models/files/output.json",-1,- 1,true);
 app2.initContent();
+models.push(app2);
 
 function init() {
 
@@ -496,6 +498,7 @@ function loadGLTF()
     }
 
     createPanel();
+    
 
     animate(); 
 
@@ -503,6 +506,7 @@ function loadGLTF()
 };
 
 function createPanel() {
+
 
   const panel = new GUI( { width: 310 } );
 
@@ -513,8 +517,24 @@ function createPanel() {
   const folder5 = panel.addFolder('Scale and Pos');
   
   panelSettings = {
-    'show hand demo': true,
-		'show human demo': false,
+    'show hand demo': function () {
+
+      skeletonTypeToShow( 'hand');
+      currentSkeletonType='hand';
+  
+    },
+		'show human demo': function () {
+
+      skeletonTypeToShow( 'human');
+      currentSkeletonType='human';
+  
+    },
+    'clear all scene object': function () {
+
+      skeletonTypeToShow( 'None');
+      currentSkeletonType='None';
+  
+    },
     'modify time scale': 1.0,
     'deactivate all': deactivateAllActions,
 		'activate all': activateAllActions,
@@ -560,8 +580,9 @@ function createPanel() {
 
   }
 
-  // folder1.add( settings, 'show hand demo' ).onChange( showModel );
-  // folder1.add( settings, 'show human demo' ).onChange( showSkeleton );
+  demoControls.push(folder1.add( panelSettings, 'show hand demo' ));
+  demoControls.push(folder1.add( panelSettings, 'show human demo' ));
+  demoControls.push(folder1.add( panelSettings, 'clear all scene object' ));
 
   folder2.add( panelSettings, 'deactivate all' );
   folder2.add( panelSettings, 'activate all' );
@@ -571,7 +592,7 @@ function createPanel() {
   
   folder4.add( panelSettings, 'modify time scale', 0.0, 1.5, 0.01 ).onChange( modifyTimeScale );
   folder5.add( panelSettings, 'set mesh scale', 0.01, 1, 0.01 ).onChange(setMeshScale);
-
+  
 
   
 
@@ -607,9 +628,57 @@ function createPanel() {
 
 }
 
+function skeletonTypeToShow(skeletonType ) {
+
+  
+  //model.visible = visibility;
+  if( skeletonType==='hand')
+  {
+    models.forEach( function ( model ) {
+
+      if (model.tail.length===20)
+      {
+          model.boneVisHelper.visible=true;
+      }
+      else
+      {
+        model.boneVisHelper.visible=false;
+      }
+
+    } );
+  }
+  else if( skeletonType==='human')
+  {
+    models.forEach( function ( model ) {
+
+      if (model.tail.length!==20)
+      {
+          model.boneVisHelper.visible=true;
+      }
+      else
+      {
+        model.boneVisHelper.visible=false;
+      }
+
+    } );
+
+  }
+  else
+  {
+    models.forEach( function ( model ) {
+      model.boneVisHelper.visible=false;
+    });
+
+  }
+  
+
+}
+
+
 function setMeshScale(scale) {
 
   app.mesh.scale.set(scale,scale,scale);
+  //app2.mesh.scale.set(scale,scale,scale);
 
 }
 
@@ -811,6 +880,27 @@ function setWeight( action, weight ) {
 
 }
 
+function updateDemoControls() {
+
+  if ( currentSkeletonType==='hand' ) {
+
+    demoControls[ 0 ].disable();
+    demoControls[ 1 ].enable();
+
+  }
+  else if ( currentSkeletonType==='human' )
+  {
+    demoControls[ 0 ].enable();
+    demoControls[ 1 ].disable();
+  }
+  else
+  {
+    demoControls[ 0 ].enable();
+    demoControls[ 1 ].enable();
+  }
+
+}
+
 function onWindowResize() {
 
   camera.aspect = window.innerWidth / window.innerHeight;
@@ -835,6 +925,7 @@ function animate() {
 
   }
 
+  updateDemoControls();
   
 
   // Get the time elapsed since the last frame, used for mixer update
@@ -867,6 +958,7 @@ function handleFileOneSelect(evt) {
     return function(e) {
       //console.log(reader.result);
       const obj3 = new OBJExample( "dummy/path",0,-0.5);
+      models.push(obj3);
       obj3.loadDataFromFile(reader.result);
     };
   })(f);
@@ -881,6 +973,19 @@ function handleFileTwoSelect(evt) {
       //console.log(reader.result);
       const obj4 = new OBJExample( "dummy/path",-0.5,-0.5);
       obj4.loadDataFromFile(reader.result);
+
+      if (models.length===3)
+      {
+        let item=models.pop();
+        console.log(item);
+        scene.remove(item);
+      }
+
+      models.push(obj4);
+;
+      console.log('model length'+models.length);
+      console.log(models)
+      
     };
   })(f);
   reader.readAsText(f);
