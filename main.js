@@ -330,6 +330,7 @@ OBJExample.prototype = {
     // create a ClipAction and set it to play
     this.clipAction = this.mixer.clipAction(this.clip);
     this.clipAction.play();
+    actions.push(this.clipAction);
     //console.log(this.clip);
 
     mixers.push(this.mixer);
@@ -342,7 +343,7 @@ let scene, renderer, camera, stats;
 let model, skeleton, mixer, clock;
 
 const crossFadeControls = [];
-const mixers = [];
+const mixers = [],actions=[];
 
 let currentBaseAction = 'idle';
 const allActions = [];
@@ -360,7 +361,10 @@ const additiveActions = {
 let panelSettings, numAnimations;
 /// init the scene
 init();
-/// init GLTF
+//var for GUI panels
+let singleStepMode = false;
+let sizeOfNextStep = 0;
+/// init GLTF and GUI panels
 loadGLTF();
 /// load all demo data/s
 const app = new OBJExample( "models/files/hand_output.json",0.5,0);
@@ -493,7 +497,7 @@ function loadGLTF()
 
     createPanel();
 
-    animate();
+    animate(); 
 
   } );
 };
@@ -502,21 +506,25 @@ function createPanel() {
 
   const panel = new GUI( { width: 310 } );
 
-  const folder1 = panel.addFolder( 'Base Actions' );
-  const folder2 = panel.addFolder( 'Additive Action Weights' );
-  const folder3 = panel.addFolder( 'General Speed' );
+  const folder1 = panel.addFolder('Visibility');
+  const folder2 = panel.addFolder( 'Activation/Deactivation' );
+  const folder3 = panel.addFolder('Pause Stepping');
+  const folder4 = panel.addFolder('General Speed');
   const folder5 = panel.addFolder('Scale and Pos');
-
+  
   panelSettings = {
-    'modify time scale': 1.0
-  };
-
-  const settings ={
-
+    'show hand demo': true,
+		'show human demo': false,
+    'modify time scale': 1.0,
+    'deactivate all': deactivateAllActions,
+		'activate all': activateAllActions,
+    'pause/continue': pauseContinue,
+    'make single step': toSingleStepMode,
     'modify step size': 0.05,
     'set mesh scale': 0.07,
-    
   };
+
+ 
 
   const baseNames = [ 'None', ...Object.keys( baseActions ) ];
 
@@ -552,13 +560,25 @@ function createPanel() {
 
   }
 
-  folder3.add( panelSettings, 'modify time scale', 0.0, 1.5, 0.01 ).onChange( modifyTimeScale );
-  folder5.add( settings, 'set mesh scale', 0.01, 1, 0.01 ).onChange(setMeshScale);
+  // folder1.add( settings, 'show hand demo' ).onChange( showModel );
+  // folder1.add( settings, 'show human demo' ).onChange( showSkeleton );
+
+  folder2.add( panelSettings, 'deactivate all' );
+  folder2.add( panelSettings, 'activate all' );
+  folder3.add( panelSettings, 'pause/continue' );
+  folder3.add( panelSettings, 'make single step' );
+  folder3.add( panelSettings, 'modify step size', 0.01, 0.1, 0.001 );
+  
+  folder4.add( panelSettings, 'modify time scale', 0.0, 1.5, 0.01 ).onChange( modifyTimeScale );
+  folder5.add( panelSettings, 'set mesh scale', 0.01, 1, 0.01 ).onChange(setMeshScale);
+
+
   
 
   folder1.open();
   folder2.open();
   folder3.open();
+  folder4.open();
   folder5.open();
 
   crossFadeControls.forEach( function ( control ) {
@@ -593,18 +613,92 @@ function setMeshScale(scale) {
 
 }
 
-function activateAction( action ) {
-
-  const clip = action.getClip();
-  const settings = baseActions[ clip.name ] || additiveActions[ clip.name ];
-  setWeight( action, settings.weight );
-  action.play();
-
-}
 
 function modifyTimeScale( speed ) {
 
-  mixer.timeScale = speed;
+  for ( const mixer of mixers ) mixer.timeScale=speed;
+  
+
+}
+
+function deactivateAllActions() {
+
+  actions.forEach( function ( action ) {
+
+    action.stop();
+
+  } );
+
+}
+
+function activateAllActions() {
+
+  actions.forEach( function ( action ) {
+
+    action.play();
+
+  } );
+
+}
+
+function pauseContinue() {
+
+if ( singleStepMode ) {
+
+  singleStepMode = false;
+  unPauseAllActions();
+
+} else {
+
+  if ( actions[0].paused ) {
+
+    unPauseAllActions();
+
+  } else {
+
+    pauseAllActions();
+
+  }
+
+}
+
+}
+
+function pauseAllActions() {
+
+  actions.forEach( function ( action ) {
+
+    action.paused = true;
+
+  } );
+
+}
+
+function unPauseAllActions() {
+
+  actions.forEach( function ( action ) {
+
+    action.paused = false;
+
+  } );
+
+}
+
+function toSingleStepMode() {
+
+  unPauseAllActions();
+
+  singleStepMode = true;
+  sizeOfNextStep = panelSettings[ 'modify step size' ];
+
+}
+
+function activateAction(action) {
+
+  const clip = action.getClip();
+  const settings = baseActions[clip.name] || additiveActions[clip.name];
+  setWeight(action, settings.weight);
+  action.play();
 
 }
 
@@ -741,9 +835,18 @@ function animate() {
 
   }
 
+  
+
   // Get the time elapsed since the last frame, used for mixer update
 
-  const mixerUpdateDelta = clock.getDelta();
+  let mixerUpdateDelta = clock.getDelta();
+
+  if ( singleStepMode ) {
+
+    mixerUpdateDelta = sizeOfNextStep;
+    sizeOfNextStep = 0;
+
+  }
 
   // Update the animation mixer, the stats panel, and render this frame
 
