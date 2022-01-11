@@ -10,7 +10,7 @@ import { FontLoader } from 'three/examples//jsm/loaders/FontLoader.js';
 //import {OBJExample} from './js/customObj.js';
 
 ///////////////////// custom obj //////////////////////////
-const OBJExample = function ( elementToBindTo,pos_x,pos_z,meshScale ) {
+const OBJExample = function ( elementToBindTo,pos_x,pos_z ) {
 
 
   this.path= elementToBindTo;
@@ -25,7 +25,7 @@ const OBJExample = function ( elementToBindTo,pos_x,pos_z,meshScale ) {
   this.fakeMeshGeometry = new THREE.CylinderGeometry(5, 5, 5, 5, 15, 5, 30);
   // create skin mesh geometry var
   this.mesh=null;
-  this.meshScale=0.07;
+  this.meshScale=1; // by default  1, if human 0.07, else hand 1
   this.skeleton=null;
   this.boneVisHelper=null;
 
@@ -70,6 +70,7 @@ OBJExample.prototype = {
           {
             scope.head=[0,1,2,3,4,5,0,7,8,9,10,11,0, 13,14,15,16,17,18,15,20,21,22,23,24,25,23,27,15,29,30,31,32,33,34,32,36];
             scope.tail=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37];
+            scope.meshScale=0.07;
           }
 
 
@@ -83,6 +84,35 @@ OBJExample.prototype = {
 
     loader.load( scope.path, onLoadBVH );
 
+
+  },
+
+  loadDataFromFile: function(data){
+    this.animData=JSON.parse(data); 
+
+    const dimensions = [ this.animData.length, this.animData[0].length ,this.animData[0][0].length];
+          console.log( dimensions);
+
+           //connection array;
+          if(dimensions[1]===21)
+          {   //(3, 21, 24)
+            this.head   = [ 0,  1,  2, 3, 0,  5,  6,  7,  0,9, 10, 11, 0, 13, 14, 15, 0,17, 18,19]
+            this.tail   = [  1,  2,  3, 4, 5,  6,  7,  8, 9,10, 11, 12, 13, 14, 15, 16, 17,18, 19,20]
+          }
+
+          else
+          {
+            this.head=[0,1,2,3,4,5,0,7,8,9,10,11,0, 13,14,15,16,17,18,15,20,21,22,23,24,25,23,27,15,29,30,31,32,33,34,32,36];
+            this.tail=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37];
+            this.meshScale=0.07;
+          }
+
+
+
+          this.createSkeleton();
+          this.createFakeSkinMesh();
+          this.createSkinMesh();
+          this.setUpAnimation();
 
   },
 
@@ -333,11 +363,11 @@ init();
 /// init GLTF
 loadGLTF();
 /// load all demo data/s
-const app = new OBJExample( "models/files/hand_output.json",1,1,0,scene);
+const app = new OBJExample( "models/files/hand_output.json",0.5,0);
 app.initContent();
 
 
-const app2 = new OBJExample( "models/files/output.json",-1,- 1,0,scene);
+const app2 = new OBJExample( "models/files/output.json",-1,- 1);
 app2.initContent();
 
 function init() {
@@ -732,7 +762,9 @@ function handleFileOneSelect(evt) {
   var reader = new FileReader();
   reader.onload = (function(theFile) {
     return function(e) {
-      console.log(reader.result);
+      //console.log(reader.result);
+      const obj3 = new OBJExample( "dummy/path",0,-0.5);
+      obj3.loadDataFromFile(reader.result);
     };
   })(f);
   reader.readAsText(f);
@@ -743,7 +775,9 @@ function handleFileTwoSelect(evt) {
   var reader = new FileReader();
   reader.onload = (function(theFile) {
     return function(e) {
-      console.log(reader.result);
+      //console.log(reader.result);
+      const obj4 = new OBJExample( "dummy/path",-0.5,-0.5);
+      obj4.loadDataFromFile(reader.result);
     };
   })(f);
   reader.readAsText(f);
