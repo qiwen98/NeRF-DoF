@@ -249,6 +249,7 @@ OBJExample.prototype = {
     //scene.add( this.skeleton );
     this.boneVisHelper = new THREE.SkeletonHelper(this.mesh);
     this.boneVisHelper.material.linewidth = 1;
+    console.log(this.boneVisHelper.material.color);
     this.boneVisHelper.visible = this.showVis;
     scene.add(this.boneVisHelper);
   },
@@ -343,6 +344,7 @@ OBJExample.prototype = {
 let scene, renderer, camera, stats;
 let model, skeleton, mixer, clock,crossFadeControls = [],demoControls=[];
 const mixers = [],actions=[],models=[];
+let controls;
 let  currentSkeletonType='human';
 const maxDemoItemAllowed=4;
 
@@ -444,11 +446,15 @@ function init() {
   camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 100 );
   camera.position.set( - 1, 2, 3 );
 
-  const controls = new OrbitControls( camera, renderer.domElement );
+  controls = new OrbitControls( camera, renderer.domElement );
   controls.enablePan = true;
-  controls.enableZoom = false;
+  // controls.enableZoom = false;
+  controls.autoRotate=true;
   controls.target.set( 0, 1, 0 );
+
   controls.update();
+  
+
 
   stats = new Stats();
   container.appendChild( stats.dom );
@@ -553,6 +559,7 @@ function createPanel() {
       currentSkeletonType='None';
   
     },
+    'camera rotate':true,
     'modify time scale': 1.0,
     'deactivate all': deactivateAllActions,
 		'activate all': activateAllActions,
@@ -602,6 +609,7 @@ function createPanel() {
   demoControls.push(folder1.add( panelSettings, 'show human demo' ));
   demoControls.push(folder1.add( panelSettings, 'clear all scene object' ));
 
+  folder1.add( panelSettings, 'camera rotate' ).onChange( cameraRotate );
   folder2.add( panelSettings, 'deactivate all' );
   folder2.add( panelSettings, 'activate all' );
   folder3.add( panelSettings, 'pause/continue' );
@@ -644,6 +652,11 @@ function createPanel() {
 
   } );
 
+}
+
+function cameraRotate(yesno)
+{
+    controls.autoRotate=yesno;
 }
 
 function skeletonTypeToShow(skeletonType ) {
@@ -710,6 +723,7 @@ function setMeshScale(scale) {
   //app2.mesh.scale.set(scale,scale,scale);
 
 }
+
 
 
 function modifyTimeScale( speed ) {
@@ -965,6 +979,7 @@ function animate() {
   }
 
   updateDemoControls();
+  controls.update();
   
 
   // Get the time elapsed since the last frame, used for mixer update
