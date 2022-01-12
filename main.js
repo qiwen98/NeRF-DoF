@@ -344,6 +344,7 @@ let scene, renderer, camera, stats;
 let model, skeleton, mixer, clock,crossFadeControls = [],demoControls=[];
 const mixers = [],actions=[],models=[];
 let  currentSkeletonType='human';
+const maxDemoItemAllowed=4;
 
 let currentBaseAction = 'idle';
 const allActions = [];
@@ -367,14 +368,24 @@ let sizeOfNextStep = 0;
 /// init GLTF and GUI panels
 loadGLTF();
 /// load all demo data/s
-const app = new OBJExample( "models/files/hand_output.json",0.5,0,false);
-app.initContent();
-models.push(app);
+const hand_1 = new OBJExample( "models/files/hand_output.json",0.5,0,false);
+hand_1.initContent();
+models.push(hand_1);
+
+const hand_2 = new OBJExample( "models/files/hand_output.json",0.5,0.5,false);
+hand_2.initContent();
+models.push(hand_2);
 
 
-const app2 = new OBJExample( "models/files/output.json",-1,- 1,true);
-app2.initContent();
-models.push(app2);
+const human_1 = new OBJExample( "models/files/output.json",-1,0,true);
+human_1.initContent();
+models.push(human_1);
+
+const human_2 = new OBJExample( "models/files/output.json",-1,- 1,true);
+human_2.initContent();
+models.push(human_2);
+
+///loading end////////////////////////////
 
 function init() {
 
@@ -408,6 +419,11 @@ function init() {
   mesh.rotation.x = - Math.PI / 2;
   mesh.receiveShadow = true;
   scene.add( mesh );
+
+  const helper = new THREE.GridHelper( 10, 10 );
+	//helper.rotation.x = Math.PI / 2;
+	scene.add( helper );
+
 
 
 
@@ -452,9 +468,11 @@ function loadGLTF()
     model.traverse( function ( object ) {
 
       if ( object.isMesh ) object.castShadow = true;
+      if (object.isMesh)object.visible=false;
 
     } );
 
+    
     skeleton = new THREE.SkeletonHelper( model );
     skeleton.visible = false;
     scene.add( skeleton );
@@ -644,6 +662,9 @@ function skeletonTypeToShow(skeletonType ) {
       {
         model.boneVisHelper.visible=false;
       }
+       
+
+     
 
     } );
   }
@@ -660,6 +681,7 @@ function skeletonTypeToShow(skeletonType ) {
         model.boneVisHelper.visible=false;
       }
 
+
     } );
 
   }
@@ -667,6 +689,13 @@ function skeletonTypeToShow(skeletonType ) {
   {
     models.forEach( function ( model ) {
       model.boneVisHelper.visible=false;
+      //dispose the uploaded items
+      if(model.path==='dummy/path')
+      {
+        disposeItem(model);
+        
+      }
+      
     });
 
   }
@@ -880,6 +909,16 @@ function setWeight( action, weight ) {
 
 }
 
+function disposeItem(item)
+{
+  // the item should be carefully selected before paseed in
+  item.mesh.removeFromParent ();
+  item.boneVisHelper.removeFromParent();
+  scene.remove(item);
+  console.log(item.path+"has been remove")
+  console.log(models)
+}
+
 function updateDemoControls() {
 
   if ( currentSkeletonType==='hand' ) {
@@ -957,9 +996,18 @@ function handleFileOneSelect(evt) {
   reader.onload = (function(theFile) {
     return function(e) {
       //console.log(reader.result);
-      const obj3 = new OBJExample( "dummy/path",0,-0.5);
-      models.push(obj3);
+      const obj3 = new OBJExample( "dummy/folder_1",0,-0.5,true);
       obj3.loadDataFromFile(reader.result);
+      
+      
+      if (models.length>=maxDemoItemAllowed+2)
+      {
+        let item=models.splice(-2, 1)
+        disposeItem(item[0]);
+      }
+      models.push(obj3);
+      
+      ////////////
     };
   })(f);
   reader.readAsText(f);
@@ -971,20 +1019,20 @@ function handleFileTwoSelect(evt) {
   reader.onload = (function(theFile) {
     return function(e) {
       //console.log(reader.result);
-      const obj4 = new OBJExample( "dummy/path",-0.5,-0.5);
+      const obj4 = new OBJExample( "dummy/folder_2",-0.5,-0.5,true);
       obj4.loadDataFromFile(reader.result);
-
-      if (models.length===3)
+      
+      
+      if (models.length>=maxDemoItemAllowed+2)
       {
-        let item=models.pop();
-        console.log(item);
-        scene.remove(item);
-      }
+        let item=models.splice(-2, 1)
+        disposeItem(item[0]);
 
+      }
       models.push(obj4);
-;
-      console.log('model length'+models.length);
-      console.log(models)
+      
+
+      
       
     };
   })(f);
