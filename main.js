@@ -7,15 +7,16 @@ import { OrbitControls } from 'three/examples//jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples//jsm/loaders/GLTFLoader.js';
 import { SVGLoader } from 'three/examples//jsm/loaders/SVGLoader.js';
 import { FontLoader } from 'three/examples//jsm/loaders/FontLoader.js';
-//import {OBJExample} from './js/customObj.js';
+import {CustomSkeletonHelper} from './js/customSkeletonHelper.js';
 
 ///////////////////// custom obj //////////////////////////
-const OBJExample = function ( elementToBindTo,pos_x,pos_z,showVis ) {
+const OBJExample = function ( elementToBindTo,pos_x,pos_y,pos_z,showVis,reconstructed ) {
 
-
+  this.isReConstructed= reconstructed;
   this.path= elementToBindTo;
   this.animData=null;
   this.location_x=pos_x;
+  this.location_y=pos_y;
   this.location_z=pos_z;
   this.head = null;
   this.tail = null;
@@ -45,15 +46,14 @@ OBJExample.prototype = {
 
   initContent: function () {
 
-    const modelName = 'female02';
-    this._reportProgress( { detail: { text: 'Loading: ' + modelName } } );
+    this._reportProgress( { detail: { text: 'Loading: ' + this.path } } );
 
     //load file
     const loader = new THREE.FileLoader();
     const scope = this;
 
     const onLoadBVH = function ( data ) {
-      console.log( 'Loading complete: ' + modelName );
+      console.log( 'Loading complete: ' + scope.path);
       scope._reportProgress( { detail: { text: '' } } );
       scope.animData= JSON.parse(data); 
  
@@ -144,9 +144,9 @@ OBJExample.prototype = {
     rootNode.position.set(pos_x,pos_y,pos_z);
   
     //sanity check
-    console.log(rootNode.position);
-    console.log(this.animData[2][2][23]);
-    console.log(this.animData[0][1][0]);
+    // console.log(rootNode.position);
+    // console.log(this.animData[2][2][23]);
+    // console.log(this.animData[0][1][0]);
   
       // for loop // for the rest nodes
       for (let i = 1; i !== this.head.length+1; ++i)
@@ -233,6 +233,7 @@ OBJExample.prototype = {
    
     // console.log(this.mesh);
     this.skeleton = new THREE.Skeleton(this.bones);
+    
   
     // see example from THREE.Skeleton
   
@@ -242,14 +243,29 @@ OBJExample.prototype = {
     // bind the skeleton to the mesh
   
     this.mesh.bind(this.skeleton);
-    this.mesh.position.set(this.location_x,1.15,this.location_z);
+    this.mesh.position.set(this.location_x,this.location_y,this.location_z);
     this.mesh.scale.set(this.meshScale,this.meshScale,this.meshScale);
     
     scene.add(this.mesh);
     //scene.add( this.skeleton );
-    this.boneVisHelper = new THREE.SkeletonHelper(this.mesh);
-    this.boneVisHelper.material.linewidth = 1;
-    console.log(this.boneVisHelper.material.color);
+    if(this.isReConstructed)
+    {
+      const color1=new THREE.Color(1,0,0);
+      const color2=new THREE.Color(1,.5,0);
+      this.boneVisHelper = new CustomSkeletonHelper(this.mesh,color1,color2);
+    }
+    else
+    {
+      const color1=new THREE.Color(0,0,1);
+      const color2=new THREE.Color(0,1,0);
+      this.boneVisHelper = new CustomSkeletonHelper(this.mesh,color1,color2); 
+    }
+    
+    //this.boneVisHelper.material.linewidth = 1;
+
+
+    //this.boneVisHelper.geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( color7, 3 ) );
+
     this.boneVisHelper.visible = this.showVis;
     scene.add(this.boneVisHelper);
   },
@@ -370,20 +386,20 @@ let sizeOfNextStep = 0;
 /// init GLTF and GUI panels
 loadGLTF();
 /// load all demo data/s
-const hand_1 = new OBJExample( "models/files/hand_output.json",0.5,0,false);
+const hand_1 = new OBJExample( "models/files/hand_output.json",-0.5,0.75,0,false,false);
 hand_1.initContent();
 models.push(hand_1);
 
-const hand_2 = new OBJExample( "models/files/hand_output.json",0.5,0.5,false);
+const hand_2 = new OBJExample( "models/files/hand_output.json",0.5,0.75,0,false,true);
 hand_2.initContent();
 models.push(hand_2);
 
 
-const human_1 = new OBJExample( "models/files/output.json",-1,0,true);
+const human_1 = new OBJExample( "models/files/output.json",-0.5,1.15,0,true,false);
 human_1.initContent();
-models.push(human_1);
+models.push(human_1); 
 
-const human_2 = new OBJExample( "models/files/output.json",-1,- 1,true);
+const human_2 = new OBJExample( "models/files/output.json",0.5,1.15,0,true,true);
 human_2.initContent();
 models.push(human_2);
 
@@ -397,8 +413,11 @@ function init() {
   clock = new THREE.Clock();
 
   scene = new THREE.Scene();
-  scene.background = new THREE.Color( 0xa0a0a0 );
-  scene.fog = new THREE.Fog( 0xa0a0a0, 10, 50 );
+  //scene.background = new THREE.Color( 0xa0a0a0 );
+  //scene.fog = new THREE.Fog( 0xa0a0a0, 10, 50 );
+  scene.background = new THREE.Color(   0xffffff );
+
+  //scene.fog = new THREE.Fog( 0x999999, 10, 50 );
 
   const hemiLight = new THREE.HemisphereLight( 0xffffff, 0x444444 );
   hemiLight.position.set( 0, 20, 0 );
@@ -417,14 +436,17 @@ function init() {
 
   // ground
 
-  const mesh = new THREE.Mesh( new THREE.PlaneGeometry( 100, 100 ), new THREE.MeshPhongMaterial( { color: 0x999999, depthWrite: false } ) );
+  const mesh = new THREE.Mesh( new THREE.PlaneGeometry( 1000, 1000 ), new THREE.MeshPhongMaterial( { color: 0x999999, depthWrite: false } ) );
   mesh.rotation.x = - Math.PI / 2;
   mesh.receiveShadow = true;
   scene.add( mesh );
 
-  const helper = new THREE.GridHelper( 10, 10 );
+  const helper = new THREE.GridHelper( 10, 10,10 );
 	//helper.rotation.x = Math.PI / 2;
 	scene.add( helper );
+
+  // const helper2 = new THREE.GridHelper( 10, 10 );
+  // scene.add(helper2);
 
 
 
@@ -444,7 +466,7 @@ function init() {
 
   // camera
   camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 100 );
-  camera.position.set( - 1, 2, 3 );
+  camera.position.set( 0, 1, 3 );
 
   controls = new OrbitControls( camera, renderer.domElement );
   controls.enablePan = true;
@@ -657,6 +679,7 @@ function createPanel() {
 function cameraRotate(yesno)
 {
     controls.autoRotate=yesno;
+    camera.position.set(0,1,3);
 }
 
 function skeletonTypeToShow(skeletonType ) {
@@ -1011,7 +1034,7 @@ function handleFileOneSelect(evt) {
   reader.onload = (function(theFile) {
     return function(e) {
       //console.log(reader.result);
-      const obj3 = new OBJExample( "dummy/folder_1",0,-0.5,true);
+      const obj3 = new OBJExample( "dummy/folder_1",0.5,1.15,0,true,false);
       obj3.loadDataFromFile(reader.result);
       
       
@@ -1034,7 +1057,7 @@ function handleFileTwoSelect(evt) {
   reader.onload = (function(theFile) {
     return function(e) {
       //console.log(reader.result);
-      const obj4 = new OBJExample( "dummy/folder_2",-0.5,-0.5,true);
+      const obj4 = new OBJExample( "dummy/folder_2",-0.5,0.75,0,true,false);
       obj4.loadDataFromFile(reader.result);
       
       
