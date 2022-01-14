@@ -15,7 +15,7 @@ const _matrixWorldInv = /*@__PURE__*/ new THREE.Matrix4();
 
 class CustomSkeletonHelper extends THREE.LineSegments {
 
-	constructor( object ,colorOne,colorTwo) {
+	constructor( object ,colorOne,colorTwo, isTransparent) {
 
 		const bones = getBoneList( object );
 
@@ -23,6 +23,13 @@ class CustomSkeletonHelper extends THREE.LineSegments {
 
 		const vertices = [];
 		const colors = [];
+		let opacity=0;
+		if(!isTransparent)
+		{
+			opacity=1;
+		}
+		
+		
 
 
 		const color1 = colorOne;
@@ -34,7 +41,7 @@ class CustomSkeletonHelper extends THREE.LineSegments {
 
 			if ( bone.parent && bone.parent.isBone ) {
 
-				vertices.push( 0, 0, 0 );
+				vertices.push( bone.parent.position.x, bone.parent.position.y, bone.parent.position.z );
 				vertices.push( 0, 0, 0 );
 				colors.push( color1.r, color1.g, color1.b );
 				colors.push( color2.r, color2.g, color2.b );
@@ -47,31 +54,13 @@ class CustomSkeletonHelper extends THREE.LineSegments {
 		geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
 		geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
 
-		const material = new THREE.LineBasicMaterial( { vertexColors: true, depthTest: false, depthWrite: false, toneMapped: false, transparent: true } );
-        //set the points
-        const loader = new THREE.TextureLoader();
-        const texture = loader.load( 'disc.png' );
-        
+		const material = new THREE.LineBasicMaterial( { vertexColors: true, depthTest: false, depthWrite: false, toneMapped: false, transparent: true, opacity:opacity } );
+        //////////////////////////////set the points
 
 
-        const pointsMaterial = new THREE.PointsMaterial( {
+		super( geometry, material);
 
-            color: 0x0080ff,
-            map: texture,
-            size: 1,
-            alphaTest: 0.5
-
-        } );
-
-        const pointsGeometry = new THREE.BufferGeometry().setFromPoints( vertices );
-
-        const points = new THREE.Points( pointsGeometry, pointsMaterial );
-        
-        //////////////////////////////set the points end //////////////////////////////////////////////////
-		super( geometry, material );
-
-        this.group = new THREE.Group();
-        this.group.add( points );
+ 
 
 		this.type = 'SkeletonHelper';
 		this.isSkeletonHelper = true;
@@ -90,6 +79,7 @@ class CustomSkeletonHelper extends THREE.LineSegments {
 
 		const geometry = this.geometry;
 		const position = geometry.getAttribute( 'position' );
+
 
 		_matrixWorldInv.copy( this.root.matrixWorld ).invert();
 
@@ -113,7 +103,9 @@ class CustomSkeletonHelper extends THREE.LineSegments {
 
 		}
 
+
 		geometry.getAttribute( 'position' ).needsUpdate = true;
+		
 
 		super.updateMatrixWorld( force );
 
