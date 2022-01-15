@@ -43,3 +43,9 @@ justify-content: flex-end;
   text-shadow: 1px 1px 0px #000;
 }
 
+.label {
+  color: #FFF;
+  font-family: sans-serif;
+  padding: 2px;
+  background: rgba( 0, 0, 0, .6 );
+}

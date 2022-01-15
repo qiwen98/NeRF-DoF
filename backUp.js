@@ -7,12 +7,33 @@ import { OrbitControls } from 'three/examples//jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples//jsm/loaders/GLTFLoader.js';
 import { SVGLoader } from 'three/examples//jsm/loaders/SVGLoader.js';
 import { FontLoader } from 'three/examples//jsm/loaders/FontLoader.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/examples//jsm/renderers/CSS2DRenderer.js';
 import {CustomSkeletonHelper} from './js/customSkeletonHelper.js';
+import * as BufferGeometryUtils from 'three/examples//jsm/utils/BufferGeometryUtils.js';
 
 ///////////////////// custom obj //////////////////////////
-const OBJExample = function ( elementToBindTo,pos_x,pos_y,pos_z,showVis,reconstructed ) {
+const OBJExample = function ( elementToBindTo,pos_x,pos_y,pos_z,showVis,reconstructed,transparentBone,transparentVertices ) {
 
-  this.isReConstructed= reconstructed;
+  /*
+    Counts the number of times a line occurs. Case-sensitive.
+
+    Arguments:
+        elementToBindTo (str): the local file directory location to get the data, equal to dummy when open with folder.
+        pos_x (float): the global world x location of the mesh.
+        pos_y (float): the global world y location of the mesh.
+        pos_z (float): the global world z location of the mesh.
+        showVis (bool): whether this skeleton should be shown, by default all hand should not be shown and appear first.
+        reconstructed (bool): mainly used to control the colors and deferentiate between machine generated skeleton and ground truth
+                              , by default, ground truth in blue color, machine generated in red color, .
+        transparentBone (bool): whether this skeleton bones should be shown, by default, all should not be trasparent and appear at first.
+        transparentVertices (bool): whether this skeleton vertices/joints should be shown, by default, all should not be trasparent and appear at first.
+
+
+    Returns:
+        customSkeletonObj: a skeleton visualization with different settings.
+  */
+
+  
   this.path= elementToBindTo;
   this.animData=null;
   this.location_x=pos_x;
@@ -30,6 +51,30 @@ const OBJExample = function ( elementToBindTo,pos_x,pos_y,pos_z,showVis,reconstr
   this.meshScale=1; // by default  1, if human 0.07, else hand 1
   this.skeleton=null;
   this.boneVisHelper=null;
+  this.verticesVisHelper=null;
+
+  this.isReConstructed= reconstructed;
+  //default color
+  this.color1=new THREE.Color(0,0,1);
+  this.color2=new THREE.Color(0,1,0);
+  if(this.isReConstructed)
+    {
+      this.color1=new THREE.Color(1,0,0);
+      this.color2=new THREE.Color(1,.5,0);
+
+    }
+  // default bone is not transparent
+  this.transparentBone=false;
+  if(transparentBone)
+  {
+    this.transparentBone=true;
+  }
+  // default vertices is not transparent
+  this.transparentVertices=false;
+  if(transparentVertices)
+  {
+    this.transparentVertices=true;
+  }
 
   //create anim var
   this.tracks=[];
@@ -136,12 +181,14 @@ OBJExample.prototype = {
     let rootNode = new THREE.Bone();
     rootNode.name = 'bone_0';
     this.bones.push(rootNode);
+    let vertices=[];
   
     // set root node position
     let pos_x=this.animData[0][0][0];
     let pos_y=this.animData[1][0][0];
     let pos_z=this.animData[2][0][0];
     rootNode.position.set(pos_x,pos_y,pos_z);
+    vertices.push(rootNode.position);
   
     //sanity check
     // console.log(rootNode.position);
@@ -174,6 +221,7 @@ OBJExample.prototype = {
   
           //console.log(pos_x,pos_y,pos_z);
           new_node.position.set(pos_x,pos_y,pos_z);
+          vertices.push(new_node.position);
           
       }
   
@@ -186,6 +234,7 @@ OBJExample.prototype = {
       // boneContainer.add(this.bones[0]);
       // // boneContainer.scale.set(.1,.1,.1);
       // boneContainer.position.set(this.location_x,0,this.location_z);
+
     
 
       // scene.add(boneContainer);
@@ -248,26 +297,33 @@ OBJExample.prototype = {
     
     scene.add(this.mesh);
     //scene.add( this.skeleton );
-    if(this.isReConstructed)
-    {
-      const color1=new THREE.Color(1,0,0);
-      const color2=new THREE.Color(1,.5,0);
-      this.boneVisHelper = new CustomSkeletonHelper(this.mesh,color1,color2);
-    }
-    else
-    {
-      const color1=new THREE.Color(0,0,1);
-      const color2=new THREE.Color(0,1,0);
-      this.boneVisHelper = new CustomSkeletonHelper(this.mesh,color1,color2); 
-    }
+
+    this.boneVisHelper = new CustomSkeletonHelper(this.mesh,this.color1,this.color2,this.transparentBone);
     
-    //this.boneVisHelper.material.linewidth = 1;
-
-
-    //this.boneVisHelper.geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( color7, 3 ) );
+ 
 
     this.boneVisHelper.visible = this.showVis;
     scene.add(this.boneVisHelper);
+    //console.log(this.boneVisHelper);
+    
+    /////////////////////////// set the vertices///////////////////////
+
+
+    const pointsMaterial = new THREE.PointsMaterial( {
+      color: this.color2,
+      size: 7,
+      sizeAttenuation: false,
+      map: new THREE.TextureLoader().load( 'disc.png' ),
+      alphaTest: 0.5
+    } );
+
+    this.verticesVisHelper = new THREE.Points( this.boneVisHelper.geometry, pointsMaterial );
+    this.boneVisHelper.add(this.verticesVisHelper);
+    if(this.transparentVertices)    { this.verticesVisHelper.material.opacity=0  }
+
+    ////////////////////////////////////////////////////////////////////
+
+    
   },
 
   setUpAnimation: function (){
@@ -275,7 +331,7 @@ OBJExample.prototype = {
     //if hand 24 fps else human 120 fps
     const totalFrame = this.animData[0][0].length, frameRate = totalFrame===24 ? 24 : 120, duration = totalFrame / frameRate;
 
-    console.log(frameRate);
+    //console.log(frameRate);
     const times = [], values = [], tmp = new THREE.Vector3();
     // ********* node 0 dont have parent !!!! *****
     // for each frame 
@@ -357,7 +413,7 @@ OBJExample.prototype = {
 }
 ///////////////////// custom obj end //////////////////////////
 
-let scene, renderer, camera, stats;
+let scene, renderer, camera, stats,labelRenderer;;
 let model, skeleton, mixer, clock,crossFadeControls = [],demoControls=[];
 const mixers = [],actions=[],models=[];
 let controls;
@@ -386,22 +442,31 @@ let sizeOfNextStep = 0;
 /// init GLTF and GUI panels
 loadGLTF();
 /// load all demo data/s
-const hand_1 = new OBJExample( "models/files/hand_output.json",-0.5,0.75,0,false,false);
-hand_1.initContent();
-models.push(hand_1);
+/// arguments (elementToBindTo, pos_x, pos_y, pos_z, showVis, reconstructed, transparentBone, transparentVertices)
+// const hand_1 = new OBJExample( "models/files/hand_output.json",-0.5,0.75,0,false,false);
+// hand_1.initContent();
+// models.push(hand_1);
 
-const hand_2 = new OBJExample( "models/files/hand_output.json",0.5,0.75,0,false,true);
-hand_2.initContent();
-models.push(hand_2);
+// const hand_2 = new OBJExample( "models/files/hand_output.json",0.5,0.75,0,false,true);
+// hand_2.initContent();
+// models.push(hand_2);
+
+const hand_3 = new OBJExample( "models/files/hand_output.json",0,0.3,0,false,true);
+hand_3.initContent();
+models.push(hand_3);
 
 
-const human_1 = new OBJExample( "models/files/output.json",-0.5,1.15,0,true,false);
-human_1.initContent();
-models.push(human_1); 
+// const human_1 = new OBJExample( "models/files/output.json",-0.5,1.15,0,true,false,true);
+// human_1.initContent();
+// models.push(human_1); 
 
-const human_2 = new OBJExample( "models/files/output.json",0.5,1.15,0,true,true);
-human_2.initContent();
-models.push(human_2);
+// const human_2 = new OBJExample( "models/files/output.json",0.5,1.15,0,true,false,false,true);
+// human_2.initContent();
+// models.push(human_2);
+
+const human_3 = new OBJExample( "models/files/output.json",0.0,1.15,0,true,false,false,false);
+human_3.initContent();
+models.push(human_3);
 
 ///loading end////////////////////////////
 
@@ -437,6 +502,7 @@ function init() {
   // ground
 
   const mesh = new THREE.Mesh( new THREE.PlaneGeometry( 1000, 1000 ), new THREE.MeshPhongMaterial( { color: 0x999999, depthWrite: false } ) );
+  //const mesh = new THREE.Mesh( new THREE.PlaneGeometry( 100, 100 ), new THREE.MeshPhongMaterial( { color: 0xa0a0a0, depthWrite: false } ) );
   mesh.rotation.x = - Math.PI / 2;
   mesh.receiveShadow = true;
   scene.add( mesh );
@@ -464,11 +530,19 @@ function init() {
   renderer.shadowMap.enabled = true;
   container.appendChild( renderer.domElement );
 
+  // css renderer
+  labelRenderer = new CSS2DRenderer();
+  labelRenderer.setSize( window.innerWidth, window.innerHeight );
+  labelRenderer.domElement.style.position = 'absolute';
+  labelRenderer.domElement.style.top = '0px';
+  labelRenderer.domElement.style.pointerEvents = 'none';
+  container.appendChild( labelRenderer.domElement );
+
   // camera
   camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 100 );
   camera.position.set( 0, 1, 3 );
 
-  controls = new OrbitControls( camera, renderer.domElement );
+  controls = new OrbitControls( camera, labelRenderer.domElement );
   controls.enablePan = true;
   // controls.enableZoom = false;
   controls.autoRotate=true;
@@ -504,6 +578,16 @@ function loadGLTF()
     skeleton = new THREE.SkeletonHelper( model );
     skeleton.visible = false;
     scene.add( skeleton );
+
+    const moonDiv = document.createElement( 'div' );
+    moonDiv.className = 'label';
+    moonDiv.textContent = 'Moon';
+    moonDiv.style.marginTop = '-1em';
+    const moonLabel = new CSS2DObject( moonDiv );
+    moonLabel.position.set(0,0,0);
+    let root = new THREE.Group();
+				scene.add( root );
+        root.add(moonLabel);
 
     const animations = gltf.animations;
     mixer = new THREE.AnimationMixer( model );
@@ -589,6 +673,8 @@ function createPanel() {
     'make single step': toSingleStepMode,
     'modify step size': 0.05,
     'set mesh scale': 0.07,
+    'bone opacity (transparent)': 1,
+    'vertices opacity (transparent)': 1,
   };
 
  
@@ -632,6 +718,8 @@ function createPanel() {
   demoControls.push(folder1.add( panelSettings, 'clear all scene object' ));
 
   folder1.add( panelSettings, 'camera rotate' ).onChange( cameraRotate );
+  folder1.add( panelSettings, 'bone opacity (transparent)',0,1,1 ).onChange( setBoneTransparent );
+  folder1.add( panelSettings, 'vertices opacity (transparent)',0,1,1 ).onChange( setVerticesTransparent );
   folder2.add( panelSettings, 'deactivate all' );
   folder2.add( panelSettings, 'activate all' );
   folder3.add( panelSettings, 'pause/continue' );
@@ -676,6 +764,27 @@ function createPanel() {
 
 }
 
+function setVerticesTransparent(opacity)
+{
+  models.forEach( function ( model ) {
+
+
+    model.verticesVisHelper.material.opacity=opacity;
+  } );
+  
+}
+
+function setBoneTransparent(opacity)
+{
+  models.forEach( function ( model ) {
+
+    model.boneVisHelper.material.opacity=opacity;
+
+  } );
+
+
+}
+
 function cameraRotate(yesno)
 {
     controls.autoRotate=yesno;
@@ -689,6 +798,8 @@ function skeletonTypeToShow(skeletonType ) {
   if( skeletonType==='hand')
   {
     models.forEach( function ( model ) {
+
+      
 
       if (model.tail.length===20)
       {
@@ -983,6 +1094,7 @@ function onWindowResize() {
   camera.updateProjectionMatrix();
 
   renderer.setSize( window.innerWidth, window.innerHeight );
+  labelRenderer.setSize( window.innerWidth, window.innerHeight );
 
 }
 

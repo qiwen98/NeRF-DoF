@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { LineMaterial } from 'three/examples//jsm/lines/LineMaterial.js';
 
 // import { LineSegments } from '../objects/LineSegments.js';
 // import { Matrix4 } from '../math/Matrix4.js';
@@ -53,6 +54,8 @@ class CustomSkeletonHelper extends THREE.LineSegments {
 
 		geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
 		geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
+
+
 
 		const material = new THREE.LineBasicMaterial( { vertexColors: true, depthTest: false, depthWrite: false, toneMapped: false, transparent: true, opacity:opacity } );
         //////////////////////////////set the points

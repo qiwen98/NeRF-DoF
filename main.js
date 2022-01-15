@@ -7,6 +7,7 @@ import { OrbitControls } from 'three/examples//jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples//jsm/loaders/GLTFLoader.js';
 import { SVGLoader } from 'three/examples//jsm/loaders/SVGLoader.js';
 import { FontLoader } from 'three/examples//jsm/loaders/FontLoader.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/examples//jsm/renderers/CSS2DRenderer.js';
 import {CustomSkeletonHelper} from './js/customSkeletonHelper.js';
 import * as BufferGeometryUtils from 'three/examples//jsm/utils/BufferGeometryUtils.js';
 
@@ -74,6 +75,7 @@ const OBJExample = function ( elementToBindTo,pos_x,pos_y,pos_z,showVis,reconstr
   {
     this.transparentVertices=true;
   }
+  this.Label=null;
 
   //create anim var
   this.tracks=[];
@@ -322,6 +324,17 @@ OBJExample.prototype = {
 
     ////////////////////////////////////////////////////////////////////
 
+    const Div = document.createElement( 'div' );
+    Div.className = 'label';
+    Div.textContent = 'Text';
+    Div.style.color =this.color2.getStyle();
+    Div.style.marginTop = '-1em';
+    this.Label = new CSS2DObject( Div );
+    this.Label.position.copy(this.mesh.position);
+    this.Label.visible=this.showVis;
+
+    this.boneVisHelper.add( this.Label );
+
 
     
   },
@@ -413,7 +426,7 @@ OBJExample.prototype = {
 }
 ///////////////////// custom obj end //////////////////////////
 
-let scene, renderer, camera, stats;
+let scene, renderer, camera, stats,labelRenderer;;
 let model, skeleton, mixer, clock,crossFadeControls = [],demoControls=[];
 const mixers = [],actions=[],models=[];
 let controls;
@@ -443,22 +456,30 @@ let sizeOfNextStep = 0;
 loadGLTF();
 /// load all demo data/s
 /// arguments (elementToBindTo, pos_x, pos_y, pos_z, showVis, reconstructed, transparentBone, transparentVertices)
-const hand_1 = new OBJExample( "models/files/hand_output.json",-0.5,0.75,0,false,false);
-hand_1.initContent();
-models.push(hand_1);
+// const hand_1 = new OBJExample( "models/files/hand_output.json",-0.5,0.75,0,false,false);
+// hand_1.initContent();
+// models.push(hand_1);
 
-const hand_2 = new OBJExample( "models/files/hand_output.json",0.5,0.75,0,false,true);
-hand_2.initContent();
-models.push(hand_2);
+// const hand_2 = new OBJExample( "models/files/hand_output.json",0.5,0.75,0,false,true);
+// hand_2.initContent();
+// models.push(hand_2);
+
+const hand_3 = new OBJExample( "models/files/hand_output.json",0,0.3,0,false,true);
+hand_3.initContent();
+models.push(hand_3);
 
 
-const human_1 = new OBJExample( "models/files/output.json",-0.5,1.15,0,true,false,true);
-human_1.initContent();
-models.push(human_1); 
+// const human_1 = new OBJExample( "models/files/output.json",-0.5,1.15,0,true,false,true);
+// human_1.initContent();
+// models.push(human_1); 
 
-const human_2 = new OBJExample( "models/files/output.json",0.5,1.15,0,true,false,false,true);
-human_2.initContent();
-models.push(human_2);
+// const human_2 = new OBJExample( "models/files/output.json",0.5,1.15,0,true,false,false,true);
+// human_2.initContent();
+// models.push(human_2);
+
+const human_3 = new OBJExample( "models/files/output.json",0.0,1.15,0,true,false,false,false);
+human_3.initContent();
+models.push(human_3);
 
 ///loading end////////////////////////////
 
@@ -499,9 +520,9 @@ function init() {
   mesh.receiveShadow = true;
   scene.add( mesh );
 
-  const helper = new THREE.GridHelper( 10, 10,10 );
-	//helper.rotation.x = Math.PI / 2;
-	scene.add( helper );
+  // const helper = new THREE.GridHelper( 10, 10,10 );
+	// //helper.rotation.x = Math.PI / 2;
+	// scene.add( helper );
 
   // const helper2 = new THREE.GridHelper( 10, 10 );
   // scene.add(helper2);
@@ -515,6 +536,7 @@ function init() {
 
 
 
+
   renderer = new THREE.WebGLRenderer( { antialias: true } );
   renderer.setPixelRatio( window.devicePixelRatio );
   renderer.setSize( window.innerWidth, window.innerHeight );
@@ -522,11 +544,19 @@ function init() {
   renderer.shadowMap.enabled = true;
   container.appendChild( renderer.domElement );
 
+  // css renderer
+  labelRenderer = new CSS2DRenderer();
+  labelRenderer.setSize( window.innerWidth, window.innerHeight );
+  labelRenderer.domElement.style.position = 'absolute';
+  labelRenderer.domElement.style.top = '0px';
+  labelRenderer.domElement.style.pointerEvents = 'none';
+  container.appendChild( labelRenderer.domElement );
+
   // camera
   camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 100 );
   camera.position.set( 0, 1, 3 );
 
-  controls = new OrbitControls( camera, renderer.domElement );
+  controls = new OrbitControls( camera, labelRenderer.domElement );
   controls.enablePan = true;
   // controls.enableZoom = false;
   controls.autoRotate=true;
@@ -562,6 +592,8 @@ function loadGLTF()
     skeleton = new THREE.SkeletonHelper( model );
     skeleton.visible = false;
     scene.add( skeleton );
+
+    
 
     const animations = gltf.animations;
     mixer = new THREE.AnimationMixer( model );
@@ -649,6 +681,7 @@ function createPanel() {
     'set mesh scale': 0.07,
     'bone opacity (transparent)': 1,
     'vertices opacity (transparent)': 1,
+    'show/disable label': true,
   };
 
  
@@ -694,6 +727,8 @@ function createPanel() {
   folder1.add( panelSettings, 'camera rotate' ).onChange( cameraRotate );
   folder1.add( panelSettings, 'bone opacity (transparent)',0,1,1 ).onChange( setBoneTransparent );
   folder1.add( panelSettings, 'vertices opacity (transparent)',0,1,1 ).onChange( setVerticesTransparent );
+  folder1.add( panelSettings, 'show/disable label' ).onChange( showLabel );
+
   folder2.add( panelSettings, 'deactivate all' );
   folder2.add( panelSettings, 'activate all' );
   folder3.add( panelSettings, 'pause/continue' );
@@ -738,6 +773,21 @@ function createPanel() {
 
 }
 
+function showLabel(yesno)
+{
+
+  models.forEach( function ( model ) {
+
+    if (model.boneVisHelper.visible=== true)
+    {
+      model.Label.visible=yesno;
+    }
+
+
+  } );
+  
+}
+
 function setVerticesTransparent(opacity)
 {
   models.forEach( function ( model ) {
@@ -778,10 +828,12 @@ function skeletonTypeToShow(skeletonType ) {
       if (model.tail.length===20)
       {
           model.boneVisHelper.visible=true;
+          model.Label.visible=true;
       }
       else
       {
         model.boneVisHelper.visible=false;
+        model.Label.visible=false;
       }
        
 
@@ -796,10 +848,12 @@ function skeletonTypeToShow(skeletonType ) {
       if (model.tail.length!==20)
       {
           model.boneVisHelper.visible=true;
+          model.Label.visible=true;
       }
       else
       {
         model.boneVisHelper.visible=false;
+        model.Label.visible=false;
       }
 
 
@@ -810,6 +864,7 @@ function skeletonTypeToShow(skeletonType ) {
   {
     models.forEach( function ( model ) {
       model.boneVisHelper.visible=false;
+      model.Label.visible=false;
       //dispose the uploaded items
       if(model.path==='dummy/path')
       {
@@ -1068,6 +1123,7 @@ function onWindowResize() {
   camera.updateProjectionMatrix();
 
   renderer.setSize( window.innerWidth, window.innerHeight );
+  labelRenderer.setSize( window.innerWidth, window.innerHeight );
 
 }
 
@@ -1110,6 +1166,7 @@ function animate() {
   stats.update();
 
   renderer.render( scene, camera );
+  labelRenderer.render( scene, camera );
 
 }
 
