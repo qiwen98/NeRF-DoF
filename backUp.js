@@ -10,6 +10,13 @@ import { FontLoader } from 'three/examples//jsm/loaders/FontLoader.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/examples//jsm/renderers/CSS2DRenderer.js';
 import {CustomSkeletonHelper} from './js/customSkeletonHelper.js';
 import * as BufferGeometryUtils from 'three/examples//jsm/utils/BufferGeometryUtils.js';
+import { Line2 } from 'three/examples//jsm/lines/Line2.js';
+import { LineMaterial } from 'three/examples//jsm/lines/LineMaterial.js';
+import { LineGeometry } from 'three/examples//jsm/lines/LineGeometry.js';
+import * as GeometryUtils from 'three/examples//jsm/utils/GeometryUtils.js';
+import { LineSegmentsGeometry } from "three/examples/jsm/lines/LineSegmentsGeometry";
+
+
 
 ///////////////////// custom obj //////////////////////////
 const OBJExample = function ( elementToBindTo,pos_x,pos_y,pos_z,showVis,reconstructed,transparentBone,transparentVertices ) {
@@ -75,6 +82,7 @@ const OBJExample = function ( elementToBindTo,pos_x,pos_y,pos_z,showVis,reconstr
   {
     this.transparentVertices=true;
   }
+  this.Label=null;
 
   //create anim var
   this.tracks=[];
@@ -304,14 +312,14 @@ OBJExample.prototype = {
 
     this.boneVisHelper.visible = this.showVis;
     scene.add(this.boneVisHelper);
-    //console.log(this.boneVisHelper);
+    console.log(this.boneVisHelper);
     
     /////////////////////////// set the vertices///////////////////////
 
 
     const pointsMaterial = new THREE.PointsMaterial( {
       color: this.color2,
-      size: 7,
+      size: 10,
       sizeAttenuation: false,
       map: new THREE.TextureLoader().load( 'disc.png' ),
       alphaTest: 0.5
@@ -321,7 +329,25 @@ OBJExample.prototype = {
     this.boneVisHelper.add(this.verticesVisHelper);
     if(this.transparentVertices)    { this.verticesVisHelper.material.opacity=0  }
 
+    // let geometry2 = new LineSegmentsGeometry().setPositions( this.boneVisHelper.geometry.attributes.position.array );
+    // let material2 =  new LineMaterial({ color: 0x000000,linewidth: 0.001, })
+    // let lines = new THREE.LineSegments(geometry2, material2);
+    // this.boneVisHelper.add(lines);
+
     ////////////////////////////////////////////////////////////////////
+
+    const Div = document.createElement( 'div' );
+    Div.className = 'label';
+    Div.textContent = 'Text';
+    Div.style.color =this.color2.getStyle();
+    Div.style.marginTop = '-1em';
+    this.Label = new CSS2DObject( Div );
+    this.Label.position.copy(this.mesh.position);
+    this.Label.visible=this.showVis;
+
+    this.boneVisHelper.add( this.Label );
+
+    
 
     
   },
@@ -413,7 +439,7 @@ OBJExample.prototype = {
 }
 ///////////////////// custom obj end //////////////////////////
 
-let scene, renderer, camera, stats,labelRenderer;;
+let scene, renderer, camera, stats,labelRenderer,matLine;
 let model, skeleton, mixer, clock,crossFadeControls = [],demoControls=[];
 const mixers = [],actions=[],models=[];
 let controls;
@@ -507,9 +533,9 @@ function init() {
   mesh.receiveShadow = true;
   scene.add( mesh );
 
-  const helper = new THREE.GridHelper( 10, 10,10 );
-	//helper.rotation.x = Math.PI / 2;
-	scene.add( helper );
+  // const helper = new THREE.GridHelper( 10, 10,10 );
+	// //helper.rotation.x = Math.PI / 2;
+	// scene.add( helper );
 
   // const helper2 = new THREE.GridHelper( 10, 10 );
   // scene.add(helper2);
@@ -520,6 +546,7 @@ function init() {
   //console.log(app2.pos_z);
 
   //app.initContent();
+
 
 
 
@@ -542,7 +569,7 @@ function init() {
   camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 100 );
   camera.position.set( 0, 1, 3 );
 
-  controls = new OrbitControls( camera, labelRenderer.domElement );
+  controls = new OrbitControls( camera, renderer.domElement );
   controls.enablePan = true;
   // controls.enableZoom = false;
   controls.autoRotate=true;
@@ -575,19 +602,70 @@ function loadGLTF()
     } );
 
     
+
+    
     skeleton = new THREE.SkeletonHelper( model );
     skeleton.visible = false;
     scene.add( skeleton );
+  
+    const positions = [];
+    const colors = [];
 
-    const moonDiv = document.createElement( 'div' );
-    moonDiv.className = 'label';
-    moonDiv.textContent = 'Moon';
-    moonDiv.style.marginTop = '-1em';
-    const moonLabel = new CSS2DObject( moonDiv );
-    moonLabel.position.set(0,0,0);
-    let root = new THREE.Group();
-				scene.add( root );
-        root.add(moonLabel);
+    const points = GeometryUtils.hilbert3D( new THREE.Vector3( 0, 0, 0 ), 1.0, 1, 0, 1, 2, 3, 4, 5, 6, 7 );
+
+    const spline = new THREE.CatmullRomCurve3( points );
+    const divisions = Math.round( 12 * points.length );
+    const point = new THREE.Vector3();
+    const color = new THREE.Color();
+
+    for ( let i = 0, l = divisions; i < l; i ++ ) {
+
+      const t = i / l;
+
+      spline.getPoint( t, point );
+      positions.push( point.x, point.y, point.z );
+
+      color.setHSL( t, 1.0, 0.5 );
+      colors.push( color.r, color.g, color.b );
+
+    }
+
+    // // Line2 ( LineGeometry, LineMaterial )
+    // const geometry = new LineGeometry();
+    // geometry.setPositions(positions);
+    // geometry.setColors( new THREE.Color(1,1,1) );
+
+    // matLine = new LineMaterial( {
+
+    //   color: 0xffffff,
+    //   linewidth:5, // in world units with size attenuation, pixels otherwise
+    //   vertexColors: true,
+      
+    //   //resolution:  // to be set by renderer, eventually
+    //   dashed: false,
+    //   alphaToCoverage: true,
+
+    // } );
+
+    // let line = new Line2( geometry, matLine );
+    // line.computeLineDistances();
+    // line.scale.set( 2, 2, 2 );
+    // scene.add( line );
+
+    ///////////////////////////////
+    // const Lgeometry = new THREE.BoxGeometry( 1, 1, 1 );
+    // console.log(Lgeometry);
+    // console.log(skeleton);
+    // const edges = new THREE.EdgesGeometry( Lgeometry );
+    // let geometry = new LineSegmentsGeometry().setPositions( skeleton.geometry.attributes.position.array );
+    // let material =  new LineMaterial({ color: 0x000000,linewidth: 0.001, })
+    // let lines = new THREE.LineSegments(geometry, material);
+    // scene.add(lines); 
+
+    
+
+
+    
 
     const animations = gltf.animations;
     mixer = new THREE.AnimationMixer( model );
@@ -675,6 +753,7 @@ function createPanel() {
     'set mesh scale': 0.07,
     'bone opacity (transparent)': 1,
     'vertices opacity (transparent)': 1,
+    'show/disable label': true,
   };
 
  
@@ -720,6 +799,8 @@ function createPanel() {
   folder1.add( panelSettings, 'camera rotate' ).onChange( cameraRotate );
   folder1.add( panelSettings, 'bone opacity (transparent)',0,1,1 ).onChange( setBoneTransparent );
   folder1.add( panelSettings, 'vertices opacity (transparent)',0,1,1 ).onChange( setVerticesTransparent );
+  folder1.add( panelSettings, 'show/disable label' ).onChange( showLabel );
+
   folder2.add( panelSettings, 'deactivate all' );
   folder2.add( panelSettings, 'activate all' );
   folder3.add( panelSettings, 'pause/continue' );
@@ -764,6 +845,21 @@ function createPanel() {
 
 }
 
+function showLabel(yesno)
+{
+
+  models.forEach( function ( model ) {
+
+    if (model.boneVisHelper.visible=== true)
+    {
+      model.Label.visible=yesno;
+    }
+
+
+  } );
+  
+}
+
 function setVerticesTransparent(opacity)
 {
   models.forEach( function ( model ) {
@@ -804,10 +900,12 @@ function skeletonTypeToShow(skeletonType ) {
       if (model.tail.length===20)
       {
           model.boneVisHelper.visible=true;
+          model.Label.visible=true;
       }
       else
       {
         model.boneVisHelper.visible=false;
+        model.Label.visible=false;
       }
        
 
@@ -822,10 +920,12 @@ function skeletonTypeToShow(skeletonType ) {
       if (model.tail.length!==20)
       {
           model.boneVisHelper.visible=true;
+          model.Label.visible=true;
       }
       else
       {
         model.boneVisHelper.visible=false;
+        model.Label.visible=false;
       }
 
 
@@ -836,6 +936,7 @@ function skeletonTypeToShow(skeletonType ) {
   {
     models.forEach( function ( model ) {
       model.boneVisHelper.visible=false;
+      model.Label.visible=false;
       //dispose the uploaded items
       if(model.path==='dummy/path')
       {
@@ -1135,8 +1236,11 @@ function animate() {
   for ( const mixer of mixers ) mixer.update( mixerUpdateDelta );
 
   stats.update();
-
+  renderer.setClearColor( 0x000000, 0 );
+  //matLine.resolution.set( window.innerWidth, window.innerHeight ); // resolution of the viewport
+  labelRenderer.render( scene, camera );
   renderer.render( scene, camera );
+
 
 }
 

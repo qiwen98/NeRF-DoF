@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { LineMaterial } from 'three/examples//jsm/lines/LineMaterial.js';
+import { LineSegmentsGeometry } from "three/examples/jsm/lines/LineSegmentsGeometry";
 
 // import { LineSegments } from '../objects/LineSegments.js';
 // import { Matrix4 } from '../math/Matrix4.js';
@@ -16,10 +17,9 @@ const _matrixWorldInv = /*@__PURE__*/ new THREE.Matrix4();
 
 class CustomSkeletonHelper extends THREE.LineSegments {
 
-	constructor( object ,colorOne,colorTwo, isTransparent) {
+	constructor( object ,colorOne,colorTwo, isTransparent,renderer) {
 
 		const bones = getBoneList( object );
-
 		const geometry = new THREE.BufferGeometry();
 
 		const vertices = [];
@@ -43,7 +43,7 @@ class CustomSkeletonHelper extends THREE.LineSegments {
 			if ( bone.parent && bone.parent.isBone ) {
 
 				vertices.push( bone.parent.position.x, bone.parent.position.y, bone.parent.position.z );
-				vertices.push( 0, 0, 0 );
+				vertices.push( bone.position.x, bone.position.y, bone.position.z );
 				colors.push( color1.r, color1.g, color1.b );
 				colors.push( color2.r, color2.g, color2.b );
 
@@ -57,9 +57,25 @@ class CustomSkeletonHelper extends THREE.LineSegments {
 
 
 
-		const material = new THREE.LineBasicMaterial( { vertexColors: true, depthTest: false, depthWrite: false, toneMapped: false, transparent: true, opacity:opacity } );
-        //////////////////////////////set the points
+		let geometry2 = new LineSegmentsGeometry().setPositions( Float32Array.from(vertices));
+		const resolution = new THREE.Vector2();
+		renderer.getSize(resolution);
+		const material2 = new LineMaterial( {
 
+			color: 0xffffff,
+			linewidth: 0.001, // in world units with size attenuation, pixels otherwise
+			vertexColors: true,
+			
+			//resolution:  // to be set by renderer, eventually
+			dashed: false,
+			resolution,
+			
+			alphaToCoverage: true,
+
+		} );
+		const material = new THREE.LineBasicMaterial( { vertexColors: true, linewidth: 10, depthTest: false, depthWrite: false, toneMapped: false, transparent: true, opacity:opacity } );
+        //////////////////////////////set the points
+		
 
 		super( geometry, material);
 
