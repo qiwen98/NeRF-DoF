@@ -5,23 +5,14 @@ import Stats from 'three/examples//jsm/libs/stats.module.js';
 import { GUI } from 'three/examples//jsm/libs/lil-gui.module.min.js';
 import { OrbitControls } from 'three/examples//jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples//jsm/loaders/GLTFLoader.js';
-import { SVGLoader } from 'three/examples//jsm/loaders/SVGLoader.js';
-import { FontLoader } from 'three/examples//jsm/loaders/FontLoader.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/examples//jsm/renderers/CSS2DRenderer.js';
 import { CustomSkeletonHelper } from './js/customSkeletonHelper.js';
-import * as BufferGeometryUtils from 'three/examples//jsm/utils/BufferGeometryUtils.js';
-import { Line2 } from 'three/examples//jsm/lines/Line2.js';
-import { LineMaterial } from 'three/examples//jsm/lines/LineMaterial.js';
-import { LineGeometry } from 'three/examples//jsm/lines/LineGeometry.js';
-import * as GeometryUtils from 'three/examples//jsm/utils/GeometryUtils.js';
-import { LineSegmentsGeometry } from "three/examples/jsm/lines/LineSegmentsGeometry";
+
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 
-import { DotScreenShader } from 'three/examples//jsm/shaders/DotScreenShader.js';
-import { HalftonePass } from 'three/examples/jsm/postprocessing/HalftonePass.js';
-
+// custom glsl filter
 import { DilationShader } from './js/shaders/DilationShader.js';
 
 
@@ -461,31 +452,6 @@ const additiveActions = {
 };
 let panelSettings, numAnimations;
 
-const _VS = `
-varying vec2 vUv;
-void main() {
-  gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-  vUv = uv;
-}
-`;
-
-const _FS = `
-#include <common>
-uniform sampler2D tDiffuse;
-varying vec2 vUv;
-void main() {
-  vec4 diffuse = texture2D(tDiffuse, vUv);
-  gl_FragColor = (diffuse - 0.5) * 4.0 + 0.5;
-}
-`;
-
-const CrapShader = {
-  uniforms: {
-    tDiffuse: null,
-  },
-  vertexShader: _VS,
-  fragmentShader: _FS,
-};
 
 /// init the scene
 init();
@@ -534,7 +500,7 @@ function init() {
   //scene.background = new THREE.Color( 0xa0a0a0 );
   //scene.fog = new THREE.Fog( 0xa0a0a0, 10, 50 );
   //scene.background = new THREE.Color(   0xffffff );
-  scene.background = new THREE.Color(0x444444);
+   scene.background = new THREE.Color(0x444444);
 
   //scene.fog = new THREE.Fog( 0x999999, 10, 50 );
 
@@ -571,11 +537,6 @@ function init() {
 
 
 
-
-  //console.log(app2.pos_z);
-
-  //app.initContent();
-
   // camera
   camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 100);
   camera.position.set(0, 1, 3);
@@ -599,27 +560,9 @@ function init() {
   DilationEffect = new ShaderPass(DilationShader);
   DilationEffect.uniforms['sourceTextureSize'].value = new THREE.Vector2(window.innerWidth, window.innerHeight);
   DilationEffect.uniforms['sourceTexelSize'].value = new THREE.Vector2(1.5 / window.innerWidth, 1.5 / window.innerHeight);
-
-
   composer.addPass(DilationEffect);
 
 
-
-  // const effect1 = new ShaderPass( DotScreenShader );
-  // effect1.uniforms[ 'scale' ].value = 4;
-  // composer.addPass( effect1 );
-
-
-  // color to grayscale conversion
-
-
-
-  // // Sobel operator
-
-  // effectSobel = new ShaderPass( SobelOperatorShader );
-  // effectSobel.uniforms[ 'resolution' ].value.x = window.innerWidth * window.devicePixelRatio;
-  // effectSobel.uniforms[ 'resolution' ].value.y = window.innerHeight * window.devicePixelRatio;
-  // composer.addPass( effectSobel );
 
   // css renderer
   labelRenderer = new CSS2DRenderer();
@@ -670,65 +613,7 @@ function loadGLTF() {
     skeleton.visible = false;
     scene.add(skeleton);
 
-    const positions = [];
-    const colors = [];
-
-    const points = GeometryUtils.hilbert3D(new THREE.Vector3(0, 0, 0), 1.0, 1, 0, 1, 2, 3, 4, 5, 6, 7);
-
-    const spline = new THREE.CatmullRomCurve3(points);
-    const divisions = Math.round(12 * points.length);
-    const point = new THREE.Vector3();
-    const color = new THREE.Color();
-
-    for (let i = 0, l = divisions; i < l; i++) {
-
-      const t = i / l;
-
-      spline.getPoint(t, point);
-      positions.push(point.x, point.y, point.z);
-
-      color.setHSL(t, 1.0, 0.5);
-      colors.push(color.r, color.g, color.b);
-
-    }
-
-    // // Line2 ( LineGeometry, LineMaterial )
-    // const geometry = new LineGeometry();
-    // geometry.setPositions(positions);
-    // geometry.setColors( new THREE.Color(1,1,1) );
-
-    // matLine = new LineMaterial( {
-
-    //   color: 0xffffff,
-    //   linewidth:5, // in world units with size attenuation, pixels otherwise
-    //   vertexColors: true,
-
-    //   //resolution:  // to be set by renderer, eventually
-    //   dashed: false,
-    //   alphaToCoverage: true,
-
-    // } );
-
-    // let line = new Line2( geometry, matLine );
-    // line.computeLineDistances();
-    // line.scale.set( 2, 2, 2 );
-    // scene.add( line );
-
-    ///////////////////////////////
-    // const Lgeometry = new THREE.BoxGeometry( 1, 1, 1 );
-    // console.log(Lgeometry);
-    // console.log(skeleton);
-    // const edges = new THREE.EdgesGeometry( Lgeometry );
-    // let geometry = new LineSegmentsGeometry().setPositions( skeleton.geometry.attributes.position.array );
-    // let material =  new LineMaterial({ color: 0x000000,linewidth: 0.001, })
-    // let lines = new THREE.LineSegments(geometry, material);
-    // scene.add(lines); 
-
-
-
-
-
-
+   
     const animations = gltf.animations;
     mixer = new THREE.AnimationMixer(model);
 
