@@ -14,6 +14,8 @@ import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 
 // custom glsl filter
 import { DilationShader } from './js/shaders/DilationShader.js';
+import { AfterimagePass } from 'three/examples/jsm/postprocessing/AfterimagePass.js';
+import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js';
 
 
 
@@ -555,12 +557,20 @@ function init() {
   const renderPass = new RenderPass(scene, camera);
   composer.addPass(renderPass);
 
+  // const afterimagePass = new AfterimagePass();
+  // afterimagePass.uniforms['damp'].value=0.85;
+  // composer.addPass( afterimagePass );
   // post processing Dilation
 
   DilationEffect = new ShaderPass(DilationShader);
   DilationEffect.uniforms['sourceTextureSize'].value = new THREE.Vector2(window.innerWidth, window.innerHeight);
   DilationEffect.uniforms['sourceTexelSize'].value = new THREE.Vector2(1.5 / window.innerWidth, 1.5 / window.innerHeight);
   composer.addPass(DilationEffect);
+
+  const pass = new SMAAPass( window.innerWidth * renderer.getPixelRatio(), window.innerHeight * renderer.getPixelRatio() );
+  composer.addPass( pass );
+
+
 
 
 
@@ -706,39 +716,39 @@ function createPanel() {
 
 
 
-  const baseNames = ['None', ...Object.keys(baseActions)];
+  // const baseNames = ['None', ...Object.keys(baseActions)];
 
-  for (let i = 0, l = baseNames.length; i !== l; ++i) {
+  // for (let i = 0, l = baseNames.length; i !== l; ++i) {
 
-    const name = baseNames[i];
-    const settings = baseActions[name];
-    panelSettings[name] = function () {
+  //   const name = baseNames[i];
+  //   const settings = baseActions[name];
+  //   panelSettings[name] = function () {
 
-      const currentSettings = baseActions[currentBaseAction];
-      const currentAction = currentSettings ? currentSettings.action : null;
-      const action = settings ? settings.action : null;
+  //     const currentSettings = baseActions[currentBaseAction];
+  //     const currentAction = currentSettings ? currentSettings.action : null;
+  //     const action = settings ? settings.action : null;
 
-      prepareCrossFade(currentAction, action, 0.35);
+  //     prepareCrossFade(currentAction, action, 0.35);
 
-    };
+  //   };
 
-    crossFadeControls.push(folder1.add(panelSettings, name));
+  //   crossFadeControls.push(folder1.add(panelSettings, name));
 
-  }
+  // }
 
-  for (const name of Object.keys(additiveActions)) {
+  // for (const name of Object.keys(additiveActions)) {
 
-    const settings = additiveActions[name];
+  //   const settings = additiveActions[name];
 
-    panelSettings[name] = settings.weight;
-    folder2.add(panelSettings, name, 0.0, 1.0, 0.01).listen().onChange(function (weight) {
+  //   panelSettings[name] = settings.weight;
+  //   folder2.add(panelSettings, name, 0.0, 1.0, 0.01).listen().onChange(function (weight) {
 
-      setWeight(settings.action, weight);
-      settings.weight = weight;
+  //     setWeight(settings.action, weight);
+  //     settings.weight = weight;
 
-    });
+  //   });
 
-  }
+  // }
 
   demoControls.push(folder1.add(panelSettings, 'show hand demo'));
   demoControls.push(folder1.add(panelSettings, 'show human demo'));
