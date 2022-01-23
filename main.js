@@ -338,7 +338,7 @@ OBJExample.prototype = {
     Div.style.marginTop = '-1em';
     this.Label = new CSS2DObject(Div);
     this.Label.position.copy(this.mesh.position);
-    this.Label.visible = this.showVis;
+    this.Label.visible = false; // by default dont show label
 
     this.boneVisHelper.add(this.Label);
 
@@ -431,7 +431,7 @@ OBJExample.prototype = {
 }
 ///////////////////// custom obj end //////////////////////////
 
-let scene, renderer, camera, stats, labelRenderer, composer;
+let scene, renderer, camera, stats, labelRenderer, composer, Gridhelper;
 let model, skeleton, mixer, clock, crossFadeControls = [], demoControls = [];
 const mixers = [], actions = [], models = [];
 let controls;
@@ -464,30 +464,30 @@ let sizeOfNextStep = 0;
 loadGLTF();
 /// load all demo data/s
 /// arguments (elementToBindTo, pos_x, pos_y, pos_z, showVis, reconstructed, transparentBone, transparentVertices)
-// const hand_1 = new OBJExample( "models/files/hand_output.json",-0.5,0.75,0,false,false);
-// hand_1.initContent();
-// models.push(hand_1);
+const hand_1 = new OBJExample( "models/files/hand_output.json",-0.5,0.3,0,false,false,false);
+hand_1.initContent();
+models.push(hand_1);
 
-// const hand_2 = new OBJExample( "models/files/hand_output.json",0.5,0.75,0,false,true);
-// hand_2.initContent();
-// models.push(hand_2);
+const hand_2 = new OBJExample( "models/files/hand_output.json",0.5,0.3,0,false,true,false,false);
+hand_2.initContent();
+models.push(hand_2);
 
-const hand_3 = new OBJExample("models/files/hand_output.json", 0, 0.3, 0, false, false);
-hand_3.initContent();
-models.push(hand_3);
+// const hand_3 = new OBJExample("models/files/hand_output.json", 0, 0.3, 0, false, true,false,true);
+// hand_3.initContent();
+// models.push(hand_3);
 
 
-// const human_1 = new OBJExample( "models/files/output.json",-0.5,1.15,0,true,false,true);
-// human_1.initContent();
-// models.push(human_1); 
+const human_1 = new OBJExample( "models/files/output.json",-0.5,1.15,0,true,false,false,false);
+human_1.initContent();
+models.push(human_1); 
 
-// const human_2 = new OBJExample( "models/files/output.json",0.5,1.15,0,true,false,false,true);
-// human_2.initContent();
-// models.push(human_2);
+const human_2 = new OBJExample( "models/files/output.json",0.5,1.15,0,true,true,false,false);
+human_2.initContent();
+models.push(human_2);
 
-const human_3 = new OBJExample("models/files/output.json", 0.0, 1.15, 0, true, true, false, false);
-human_3.initContent();
-models.push(human_3);
+// const human_3 = new OBJExample("models/files/output.json", 0.0, 1.15, 0, true, false, false, true);
+// human_3.initContent();
+// models.push(human_3);
 
 ///loading end////////////////////////////
 
@@ -530,17 +530,18 @@ function init() {
   //mesh.receiveShadow = true;
   //scene.add( mesh );
 
-  const helper = new THREE.GridHelper(10, 10, 10);
-  //helper.rotation.x = Math.PI / 2;
-  scene.add(helper);
+  Gridhelper = new THREE.GridHelper(20, 20, 0x888888);
 
-  // const helper2 = new THREE.GridHelper( 10, 10 );
-  // scene.add(helper2);
+  Gridhelper.rotation.x = Math.PI / 2;
+  scene.add(Gridhelper);
 
 
+  const width = window.innerWidth;
+	const height = window.innerHeight;
 
   // camera
-  camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 100);
+  //camera = new THREE.PerspectiveCamera(45, width / height, 1, 100);
+  camera = new THREE.OrthographicCamera( - width / 1000, width / 1000, height / 1000, - height / 1000, 1, 10 );
   camera.position.set(0, 1, 3);
 
 
@@ -558,7 +559,7 @@ function init() {
   composer.addPass(renderPass);
 
   // const afterimagePass = new AfterimagePass();
-  // afterimagePass.uniforms['damp'].value=0.85;
+  // afterimagePass.uniforms['damp'].value=0.95;
   // composer.addPass( afterimagePass );
   // post processing Dilation
 
@@ -701,16 +702,18 @@ function createPanel() {
 
     },
     'camera rotate': true,
+    'set photo mode':false,
     'modify time scale': 1.0,
     'deactivate all': deactivateAllActions,
     'activate all': activateAllActions,
     'pause/continue': pauseContinue,
     'make single step': toSingleStepMode,
     'modify step size': 0.05,
-    'set mesh scale': 0.07,
+    'set Grid scale': 0.00,
+    'set Grid XY':0.00,
     'bone opacity (transparent)': 1,
     'vertices opacity (transparent)': 1,
-    'show/disable label': true,
+    'show/disable label': false,
     'show/disable dilation(post-process)': true,
   };
 
@@ -755,6 +758,7 @@ function createPanel() {
   demoControls.push(folder1.add(panelSettings, 'clear all scene object'));
 
   folder1.add(panelSettings, 'camera rotate').onChange(cameraRotate);
+  folder1.add(panelSettings, 'set photo mode').onChange(setPhotoMode);
   folder1.add(panelSettings, 'bone opacity (transparent)', 0, 1, 1).onChange(setBoneTransparent);
   folder1.add(panelSettings, 'vertices opacity (transparent)', 0, 1, 1).onChange(setVerticesTransparent);
   folder1.add(panelSettings, 'show/disable label').onChange(showLabel);
@@ -767,8 +771,8 @@ function createPanel() {
   folder3.add(panelSettings, 'modify step size', 0.01, 0.1, 0.001);
 
   folder4.add(panelSettings, 'modify time scale', 0.0, 1.5, 0.01).onChange(modifyTimeScale);
-  folder5.add(panelSettings, 'set mesh scale', 0.01, 1, 0.01).onChange(setMeshScale);
-
+  folder5.add(panelSettings, 'set Grid scale', 0.01, 1, 0.01).onChange(setGridScale);
+  folder5.add(panelSettings, 'set Grid XY', 0.01, 1, 0.01).onChange(setGridXY);
 
 
 
@@ -839,6 +843,30 @@ function setBoneTransparent(opacity) {
 function cameraRotate(yesno) {
   controls.autoRotate = yesno;
   camera.position.set(0, 1, 3);
+  
+}
+
+function setPhotoMode(yesno)
+{
+  const width = window.innerWidth;
+	const height = window.innerHeight;
+
+  if(yesno)
+  {
+    camera = new THREE.OrthographicCamera( - width / 1000, width / 1000, height / 1000, - height / 1000, 1, 10 );
+    
+    Gridhelper.rotation.x = Math.PI / 2;
+    cameraRotate(false);
+    camera.position.set(0, 1, 3);
+  }
+  else
+  {
+    
+    camera = new THREE.PerspectiveCamera(45, width / height, 1, 100);
+    camera.position.set(0, 1, 3);
+  }
+  
+
 }
 
 function skeletonTypeToShow(skeletonType) {
@@ -856,6 +884,7 @@ function skeletonTypeToShow(skeletonType) {
       }
       else {
         model.boneVisHelper.visible = false;
+        model.Label.visible=false;
         showLabel(panelSettings['show/disable label'])
       }
 
@@ -873,6 +902,7 @@ function skeletonTypeToShow(skeletonType) {
       }
       else {
         model.boneVisHelper.visible = false;
+        model.Label.visible=false;
         showLabel(panelSettings['show/disable label'])
       }
 
@@ -898,11 +928,17 @@ function skeletonTypeToShow(skeletonType) {
 }
 
 
-function setMeshScale(scale) {
+function setGridScale(scale) {
 
-  app.mesh.scale.set(scale, scale, scale);
+  //app.mesh.scale.set(scale, scale, scale);
   //app2.mesh.scale.set(scale,scale,scale);
+  Gridhelper.scale.set(scale, scale, scale);
 
+}
+
+function setGridXY(offset)
+{
+  Gridhelper.position.set(offset,offset,0);
 }
 
 
