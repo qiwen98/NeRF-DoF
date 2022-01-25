@@ -431,7 +431,7 @@ OBJExample.prototype = {
 }
 ///////////////////// custom obj end //////////////////////////
 
-let scene, renderer, camera, stats, labelRenderer, composer, Gridhelper;
+let scene, renderer, camera,orthoCamera, stats, labelRenderer, composer, Gridhelper;
 let model, skeleton, mixer, clock, crossFadeControls = [], demoControls = [];
 const mixers = [], actions = [], models = [];
 let controls;
@@ -532,7 +532,7 @@ function init() {
 
   Gridhelper = new THREE.GridHelper(20, 20, 0x888888);
 
-  Gridhelper.rotation.x = Math.PI / 2;
+  //Gridhelper.rotation.x = Math.PI / 2;
   scene.add(Gridhelper);
 
 
@@ -540,9 +540,10 @@ function init() {
 	const height = window.innerHeight;
 
   // camera
-  //camera = new THREE.PerspectiveCamera(45, width / height, 1, 100);
-  camera = new THREE.OrthographicCamera( - width / 1000, width / 1000, height / 1000, - height / 1000, 1, 10 );
+  camera = new THREE.PerspectiveCamera(45, width / height, 1, 100);
+  orthoCamera = new THREE.OrthographicCamera( - width / 10, width / 10, height / 10, - height / 10, 1, 10 );
   camera.position.set(0, 1, 3);
+  orthoCamera.position.set(0, 1, 3);
 
 
   renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -709,8 +710,8 @@ function createPanel() {
     'pause/continue': pauseContinue,
     'make single step': toSingleStepMode,
     'modify step size': 0.05,
-    'set Grid scale': 0.00,
-    'set Grid XY':0.00,
+    'set Grid scale': 1,
+    'set Grid XY':1,
     'bone opacity (transparent)': 1,
     'vertices opacity (transparent)': 1,
     'show/disable label': false,
@@ -771,8 +772,8 @@ function createPanel() {
   folder3.add(panelSettings, 'modify step size', 0.01, 0.1, 0.001);
 
   folder4.add(panelSettings, 'modify time scale', 0.0, 1.5, 0.01).onChange(modifyTimeScale);
-  folder5.add(panelSettings, 'set Grid scale', 0.01, 1, 0.01).onChange(setGridScale);
-  folder5.add(panelSettings, 'set Grid XY', 0.01, 1, 0.01).onChange(setGridXY);
+  folder5.add(panelSettings, 'set Grid scale', 0.01, 3, 0.01).onChange(setGridScale);
+  folder5.add(panelSettings, 'set Grid XY', 0.01, 2, 0.01).onChange(setGridXY);
 
 
 
@@ -848,23 +849,24 @@ function cameraRotate(yesno) {
 
 function setPhotoMode(yesno)
 {
-  const width = window.innerWidth;
-	const height = window.innerHeight;
 
   if(yesno)
   {
-    camera = new THREE.OrthographicCamera( - width / 1000, width / 1000, height / 1000, - height / 1000, 1, 10 );
     
-    Gridhelper.rotation.x = Math.PI / 2;
+    
     cameraRotate(false);
-    camera.position.set(0, 1, 3);
+    Gridhelper.rotation.x = Math.PI / 2;
+
+    // camera.position.set(0, 1, 3);
   }
   else
   {
-    
-    camera = new THREE.PerspectiveCamera(45, width / height, 1, 100);
-    camera.position.set(0, 1, 3);
+    Gridhelper.rotation.x = Math.PI ;
+    //camera.position.set(0, 1, 3);
+   // Gridhelper.rotation.x = Math.PI / 2;
   }
+
+  
   
 
 }
