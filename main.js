@@ -431,8 +431,8 @@ OBJExample.prototype = {
 }
 ///////////////////// custom obj end //////////////////////////
 
-let scene, renderer, camera,orthoCamera, stats, labelRenderer, composer, Gridhelper;
-let model, skeleton, mixer, clock, crossFadeControls = [], demoControls = [];
+let scene, renderer, camera, stats, labelRenderer, composer, Gridhelper,perspective='Perspective' ;
+let model, skeleton, mixer, clock, crossFadeControls = [], demoControls = [],perspectiveGUI=[];
 const mixers = [], actions = [], models = [];
 let controls;
 let currentSkeletonType = 'human';
@@ -541,9 +541,8 @@ function init() {
 
   // camera
   camera = new THREE.PerspectiveCamera(45, width / height, 1, 100);
-  orthoCamera = new THREE.OrthographicCamera( - width / 10, width / 10, height / 10, - height / 10, 1, 10 );
   camera.position.set(0, 1, 3);
-  orthoCamera.position.set(0, 1, 3);
+
 
 
   renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -553,28 +552,13 @@ function init() {
   renderer.shadowMap.enabled = true;
   container.appendChild(renderer.domElement);
 
-  // postprocessing
-
-  composer = new EffectComposer(renderer);
-  const renderPass = new RenderPass(scene, camera);
-  composer.addPass(renderPass);
-
-  // const afterimagePass = new AfterimagePass();
-  // afterimagePass.uniforms['damp'].value=0.95;
-  // composer.addPass( afterimagePass );
-  // post processing Dilation
-
-  DilationEffect = new ShaderPass(DilationShader);
-  DilationEffect.uniforms['sourceTextureSize'].value = new THREE.Vector2(window.innerWidth, window.innerHeight);
-  DilationEffect.uniforms['sourceTexelSize'].value = new THREE.Vector2(1.5 / window.innerWidth, 1.5 / window.innerHeight);
-  composer.addPass(DilationEffect);
-
-  const pass = new SMAAPass( window.innerWidth * renderer.getPixelRatio(), window.innerHeight * renderer.getPixelRatio() );
-  composer.addPass( pass );
+  //post processing
+  postProcessing();
 
 
 
-
+  //obit control
+  obitControl();
 
   // css renderer
   labelRenderer = new CSS2DRenderer();
@@ -587,13 +571,7 @@ function init() {
 
 
 
-  controls = new OrbitControls(camera, renderer.domElement);
-  controls.enablePan = true;
-  // controls.enableZoom = false;
-  controls.autoRotate = true;
-  controls.target.set(0, 1, 0);
 
-  controls.update();
 
 
 
@@ -672,16 +650,51 @@ function loadGLTF() {
   });
 };
 
+function postProcessing()
+{
+  // postprocessing
+
+  composer = new EffectComposer(renderer);
+  const renderPass = new RenderPass(scene, camera);
+  composer.addPass(renderPass);
+
+  // const afterimagePass = new AfterimagePass();
+  // afterimagePass.uniforms['damp'].value=0.95;
+  // composer.addPass( afterimagePass );
+  // post processing Dilation
+
+  DilationEffect = new ShaderPass(DilationShader);
+  DilationEffect.uniforms['sourceTextureSize'].value = new THREE.Vector2(window.innerWidth, window.innerHeight);
+  DilationEffect.uniforms['sourceTexelSize'].value = new THREE.Vector2(1.5 / window.innerWidth, 1.5 / window.innerHeight);
+  composer.addPass(DilationEffect);
+
+  const pass = new SMAAPass( window.innerWidth * renderer.getPixelRatio(), window.innerHeight * renderer.getPixelRatio() );
+  composer.addPass( pass );
+}
+
+function obitControl()
+{
+  controls = new OrbitControls(camera, renderer.domElement);
+  controls.enablePan = true;
+  // controls.enableZoom = false;
+  controls.autoRotate = true;
+  controls.target.set(0, 1, 0);
+
+  controls.update();
+}
+
 function createPanel() {
 
 
   const panel = new GUI({ width: 310 });
 
   const folder1 = panel.addFolder('Visibility');
+  const folder6 = panel.addFolder('Camera Controls');
   const folder2 = panel.addFolder('Activation/Deactivation');
   const folder3 = panel.addFolder('Pause Stepping');
   const folder4 = panel.addFolder('General Speed');
   const folder5 = panel.addFolder('Scale and Pos');
+  
 
   panelSettings = {
     'show hand demo': function () {
@@ -712,10 +725,15 @@ function createPanel() {
     'modify step size': 0.05,
     'set Grid scale': 1,
     'set Grid XY':1,
+    'set Obj Rotate Angle':1,
     'bone opacity (transparent)': 1,
     'vertices opacity (transparent)': 1,
     'show/disable label': false,
     'show/disable dilation(post-process)': true,
+    'perspective camera':switchCamera,
+    'orthographic camera':switchCamera,
+
+    
   };
 
 
@@ -758,8 +776,10 @@ function createPanel() {
   demoControls.push(folder1.add(panelSettings, 'show human demo'));
   demoControls.push(folder1.add(panelSettings, 'clear all scene object'));
 
-  folder1.add(panelSettings, 'camera rotate').onChange(cameraRotate);
-  folder1.add(panelSettings, 'set photo mode').onChange(setPhotoMode);
+  folder6.add(panelSettings, 'camera rotate').onChange(cameraRotate);
+  folder6.add(panelSettings, 'set photo mode').onChange(setPhotoMode);
+  perspectiveGUI.push(folder6.add(panelSettings, 'perspective camera'));
+  perspectiveGUI.push(folder6.add( panelSettings, 'orthographic camera'));
   folder1.add(panelSettings, 'bone opacity (transparent)', 0, 1, 1).onChange(setBoneTransparent);
   folder1.add(panelSettings, 'vertices opacity (transparent)', 0, 1, 1).onChange(setVerticesTransparent);
   folder1.add(panelSettings, 'show/disable label').onChange(showLabel);
@@ -774,6 +794,7 @@ function createPanel() {
   folder4.add(panelSettings, 'modify time scale', 0.0, 1.5, 0.01).onChange(modifyTimeScale);
   folder5.add(panelSettings, 'set Grid scale', 0.01, 3, 0.01).onChange(setGridScale);
   folder5.add(panelSettings, 'set Grid XY', 0.01, 2, 0.01).onChange(setGridXY);
+  folder5.add(panelSettings, 'set Obj Rotate Angle',0.01, 4, 0.01).onChange(setObjRotate);
 
 
 
@@ -852,9 +873,7 @@ function setPhotoMode(yesno)
 
   if(yesno)
   {
-    
-    
-    cameraRotate(false);
+    switchCamera();
     Gridhelper.rotation.x = Math.PI / 2;
 
     // camera.position.set(0, 1, 3);
@@ -870,6 +889,31 @@ function setPhotoMode(yesno)
   
 
 }
+
+function switchCamera() {
+  if (camera instanceof THREE.PerspectiveCamera) {
+    camera = new THREE.OrthographicCamera(
+    window.innerWidth / - 1000, window.innerWidth / 1000,window.innerHeight / 1000, window.innerHeight / - 1000, 1, 10 );
+    camera.position.x = 0;
+    camera.position.y = 1;
+    camera.position.z = 3;
+    // camera.lookAt(scene.position);
+    perspective = "Orthographic";
+  } else {
+    camera = new THREE.PerspectiveCamera(45,
+    window.innerWidth / window.innerHeight, 0.1, 1000); 
+    camera.position.x = 0;
+    camera.position.y = 1;
+    camera.position.z = 3;
+    // camera.lookAt(scene.position);
+    perspective = "Perspective";
+  }
+  postProcessing();
+  obitControl();
+  cameraRotate(false);
+  //
+  
+};
 
 function skeletonTypeToShow(skeletonType) {
 
@@ -941,6 +985,13 @@ function setGridScale(scale) {
 function setGridXY(offset)
 {
   Gridhelper.position.set(offset,offset,0);
+}
+
+function setObjRotate(angle)
+{
+  models.forEach(function (model) {
+  model.mesh.rotation.set(0,angle,0)
+  })
 }
 
 
@@ -1151,6 +1202,8 @@ function disposeItem(item) {
   console.log(models)
 }
 
+// update GUI at real time. 
+
 function updateDemoControls() {
 
   if (currentSkeletonType === 'hand') {
@@ -1168,6 +1221,19 @@ function updateDemoControls() {
     demoControls[1].enable();
   }
 
+}
+
+function updateCameraGUI(){
+  if (perspective==='Perspective')
+  {
+      perspectiveGUI[0].disable();
+      perspectiveGUI[1].enable();
+  }
+  else
+  {
+    perspectiveGUI[1].disable();
+    perspectiveGUI[0].enable();
+  }
 }
 
 
@@ -1238,7 +1304,6 @@ function render() {
 
   labelRenderer.render(scene, camera);
 
-
   if (panelSettings['show/disable dilation(post-process)']) {
 
     composer.render();
@@ -1265,6 +1330,8 @@ function animate() {
 
   }
 
+  // update GUI everyframe
+  updateCameraGUI();
   updateDemoControls();
   controls.update();
 
