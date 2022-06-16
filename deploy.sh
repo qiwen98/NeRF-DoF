@@ -23,7 +23,9 @@ git add -A
 git fetch --all
 
 # rebase
-git rebase gh-pages
+git rebase master
+
+git add -A
 
 git commit -m "Adding 'models' directory from 'master' branch."
 git push -f -u origin gh-pages
