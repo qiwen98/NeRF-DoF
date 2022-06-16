@@ -10,6 +10,7 @@ npm run deploy
 ## update master
 git add -A
 git commit -m 'New Deployment'
+git push -f -u origin master
 
 
 
