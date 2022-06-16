@@ -23,7 +23,7 @@ git add -A
 git fetch --all
 
 # rebase
-git rebase master
+git rebase gh-pages
 
 git add -A
 
