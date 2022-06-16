@@ -19,6 +19,7 @@ git checkout master -- models
 # git add all
 git add models
 git add -A
+git fetch --all
 # git add node_modules/.cache/
 git commit -m "Adding 'models' directory from 'master' branch."
 git push --all
