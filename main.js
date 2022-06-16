@@ -502,7 +502,7 @@ models.push(hand_4);
 // models.push(hand_3);
 
 
-const human_1 = new OBJExample( "models/files/Baluja_secret_uncorrupted.json",-0.5,1.15,0,true,false,false,false,true);
+const human_1 = new OBJExample( "models/files/hand_output.json",-0.5,1.15,0,true,false,false,false,true);
 human_1.initContent();
 models.push(human_1); 
 

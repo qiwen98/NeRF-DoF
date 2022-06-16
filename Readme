@@ -4,3 +4,9 @@
 ### for deploy
 > npm run build
 > npm run deploy
+
+### go to gh-pages branch
+#### update the model file
+
+
+#### all things mentioned above done with deploy.sh
