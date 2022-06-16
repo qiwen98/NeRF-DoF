@@ -13,7 +13,7 @@ git commit -m 'New Deployment'
 
 ### update gh-pages
 git checkout gh-pages
-git rm -r models
+# git rm -r models
 git checkout master -- models
 git add models
 # git add node_modules/.cache/
