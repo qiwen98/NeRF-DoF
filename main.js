@@ -22,7 +22,7 @@ import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js';
 
 
 ///////////////////// custom obj //////////////////////////
-const OBJExample = function (elementToBindTo, pos_x, pos_y, pos_z, showVis, reconstructed, transparentBone, transparentVertices) {
+const OBJExample = function (elementToBindTo, pos_x, pos_y, pos_z, showVis, reconstructed, transparentBone, transparentVertices,partialhuman) {
 
   /*
     Counts the number of times a line occurs. Case-sensitive.
@@ -53,6 +53,9 @@ const OBJExample = function (elementToBindTo, pos_x, pos_y, pos_z, showVis, reco
   this.tail = null;
   this.bones = [];
   this.showVis = showVis;
+
+  this.partialhuman=partialhuman;
+
 
   ////fake skin mesh geometry var
   this.fakeMeshGeometry = new THREE.CylinderGeometry(5, 5, 5, 5, 15, 5, 30);
@@ -115,14 +118,28 @@ OBJExample.prototype = {
 
       //connection array;
       if (dimensions[1] === 21) {   //(3, 21, 24)
-        scope.head = [0, 1, 2, 3, 0, 5, 6, 7, 0, 9, 10, 11, 0, 13, 14, 15, 0, 17, 18, 19]
+        // scope.head = [0, 1, 2, 3, 0, 5, 6, 7, 0, 9, 10, 11, 0, 13, 14, 15, 0, 17, 18, 19]
+        // scope.tail = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+
+        scope.head = [0, 1, 2, 3, 0, 5, 6, 7, 0, 9, 10, 11, 0, 13, 14, 15, 0, 17, 18, 19] 
         scope.tail = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
       }
 
+      else if (dimensions[1] === 38 && scope.partialhuman) {
+        
+        scope.head = [0, 1, 2, 3, 4, 5, 0, 7, 8, 9, 10, 11, 0, 13, 14, 15, 16, 17, 18, 15];
+        scope.tail = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+
+        // scope.head = [0, 1, 2, 3, 4, 5, 0, 7, 8, 9, 10, 11, 0, 13, 14, 15, 16, 17, 18, 15, 20, 21, 22, 23, 24, 25, 23, 27, 15, 29, 30, 31, 32, 33, 34, 32, 36];
+        // scope.tail = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37];
+        scope.meshScale = 1;
+      }
       else {
+
+
         scope.head = [0, 1, 2, 3, 4, 5, 0, 7, 8, 9, 10, 11, 0, 13, 14, 15, 16, 17, 18, 15, 20, 21, 22, 23, 24, 25, 23, 27, 15, 29, 30, 31, 32, 33, 34, 32, 36];
         scope.tail = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37];
-        scope.meshScale = 0.07;
+        scope.meshScale = 1;
       }
 
 
@@ -380,7 +397,7 @@ OBJExample.prototype = {
     // ********* node 0 end!!!! *****
 
     //for each bone node other than   
-    for (let i = 1; i < this.animData[0].length; i++) {
+    for (let i = 1; i < this.head.length; i++) {
 
       const times = [], values = [], tmp = new THREE.Vector3();
 
@@ -463,25 +480,33 @@ let sizeOfNextStep = 0;
 /// init GLTF and GUI panels
 loadGLTF();
 /// load all demo data/s
-/// arguments (elementToBindTo, pos_x, pos_y, pos_z, showVis, reconstructed, transparentBone, transparentVertices)
-const hand_1 = new OBJExample( "models/files/hand_output.json",-0.5,0.3,0,false,false,false);
-hand_1.initContent();
-models.push(hand_1);
+/// arguments (elementToBindTo, pos_x, pos_y, pos_z, showVis, reconstructed, transparentBone, transparentVertices,partialhuman)
+// const hand_1 = new OBJExample( "models/files/oursgated/OursGated_cover_uncorrupted.json",-0.5,0.3,0,false,false,false);
+// hand_1.initContent();
+// models.push(hand_1);
 
-const hand_2 = new OBJExample( "models/files/hand_output.json",0.5,0.3,0,false,true,false,false);
-hand_2.initContent();
-models.push(hand_2);
+// const hand_2 = new OBJExample( "models/files/oursgated/OursGated_recon_cover_uncorrupted.json",0.5,0.3,0,false,true,false,false);
+// hand_2.initContent();
+// models.push(hand_2);
+
+const hand_3 = new OBJExample( "models/files/Mix/OursGated_cover_uncorrupted.json",0.5,0.3,0,true,false,false);
+hand_3.initContent();
+models.push(hand_3);
+
+const hand_4 = new OBJExample( "models/files/Mix/OursGated_recon_cover_corrupted.json",0.5,0.3,0,true,true,false,false);
+hand_4.initContent();
+models.push(hand_4);
 
 // const hand_3 = new OBJExample("models/files/hand_output.json", 0, 0.3, 0, false, true,false,true);
 // hand_3.initContent();
 // models.push(hand_3);
 
 
-const human_1 = new OBJExample( "models/files/output.json",-0.5,1.15,0,true,false,false,false);
+const human_1 = new OBJExample( "models/files/Baluja_secret_uncorrupted.json",-0.5,1.15,0,true,false,false,false,true);
 human_1.initContent();
 models.push(human_1); 
 
-const human_2 = new OBJExample( "models/files/output.json",0.5,1.15,0,true,true,false,false);
+const human_2 = new OBJExample( "models/files/Baluja_recon_secret_corrupted.json",-0.5,1.15,0,true,true,false,false);
 human_2.initContent();
 models.push(human_2);
 
@@ -1066,12 +1091,16 @@ function unPauseAllActions() {
 
 }
 
+let counter =0;
+
 function toSingleStepMode() {
 
   unPauseAllActions();
 
   singleStepMode = true;
   sizeOfNextStep = panelSettings['modify step size'];
+  counter+=1;
+  console.log(counter);
 
 }
 
@@ -1340,10 +1369,13 @@ function animate() {
 
   let mixerUpdateDelta = clock.getDelta();
 
+
   if (singleStepMode) {
 
     mixerUpdateDelta = sizeOfNextStep;
     sizeOfNextStep = 0;
+
+
 
   }
 
