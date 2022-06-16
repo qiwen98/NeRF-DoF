@@ -6,9 +6,12 @@ npm run build
 
 npm run deploy
 
+## update master
 git add -A
 git commit -m 'New Deployment'
 
+
+### update gh-pages
 git checkout gh-pages
 git rm -r models
 git checkout master -- models
