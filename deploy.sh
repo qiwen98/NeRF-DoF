@@ -20,9 +20,6 @@ git fetch --all
 # git rm -r models
 git checkout master -- models
 
-# git add all
-git add models
-git add -A
 
 ##
 
