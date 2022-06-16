@@ -15,6 +15,8 @@ git commit -m 'New Deployment'
 git checkout gh-pages
 # git rm -r models
 git checkout master -- models
+
+# git add all
 git add models
 git add -A
 # git add node_modules/.cache/
