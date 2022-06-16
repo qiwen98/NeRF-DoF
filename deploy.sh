@@ -12,15 +12,18 @@ git add -A
 git commit -m 'New Deployment'
 
 
+
 ### update gh-pages
 git checkout gh-pages
+
+git fetch --all
 # git rm -r models
 git checkout master -- models
 
 # git add all
 git add models
 git add -A
-git fetch --all
+
 
 # rebase
 git rebase gh-pages
