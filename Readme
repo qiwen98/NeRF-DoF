@@ -1,0 +1,6 @@
+### for offline running
+> npm run dev
+
+### for deploy
+> npm run build
+> npm run deploy
