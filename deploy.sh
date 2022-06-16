@@ -2,6 +2,7 @@
 
 set -e
 
+npm i 
 npm run build
 
 npm run deploy
@@ -20,8 +21,11 @@ git checkout master -- models
 git add models
 git add -A
 git fetch --all
-# git add node_modules/.cache/
+
+# rebase
+git rebase gh-pages
+
 git commit -m "Adding 'models' directory from 'master' branch."
-git push --all
+git push -f -u origin gh-pages
 
 git checkout master
