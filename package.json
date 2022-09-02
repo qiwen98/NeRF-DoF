@@ -8,7 +8,7 @@
     "deploy": "gh-pages -d ./dist"
   },
   "devDependencies": {
-    "vite": "^2.7.2"
+    "vite": "^2.9.15"
   },
   "dependencies": {
     "esbuild-windows-64": "^0.14.44",

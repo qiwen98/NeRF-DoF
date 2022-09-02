@@ -22,7 +22,7 @@ import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js';
 
 
 ///////////////////// custom obj //////////////////////////
-const OBJExample = function (elementToBindTo, pos_x, pos_y, pos_z, showVis, reconstructed, transparentBone, transparentVertices,partialhuman) {
+const OBJExample = function (elementToBindTo, pos_x, pos_y, pos_z, showVis, reconstructed, transparentBone, transparentVertices,partialhuman,showLabelinstant) {
 
   /*
     Counts the number of times a line occurs. Case-sensitive.
@@ -55,6 +55,11 @@ const OBJExample = function (elementToBindTo, pos_x, pos_y, pos_z, showVis, reco
   this.showVis = showVis;
 
   this.partialhuman=partialhuman;
+
+  this.showLabelinstant=false;
+  if (showLabelinstant) {
+    this.showLabelinstant = true;
+  }
 
 
   ////fake skin mesh geometry var
@@ -123,6 +128,7 @@ OBJExample.prototype = {
 
         scope.head = [0, 1, 2, 3, 0, 5, 6, 7, 0, 9, 10, 11, 0, 13, 14, 15, 0, 17, 18, 19] 
         scope.tail = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+        scope.meshScale = 1.5;
       }
 
       else if (dimensions[1] === 38 && scope.partialhuman) {
@@ -132,14 +138,14 @@ OBJExample.prototype = {
 
         // scope.head = [0, 1, 2, 3, 4, 5, 0, 7, 8, 9, 10, 11, 0, 13, 14, 15, 16, 17, 18, 15, 20, 21, 22, 23, 24, 25, 23, 27, 15, 29, 30, 31, 32, 33, 34, 32, 36];
         // scope.tail = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37];
-        scope.meshScale = 1;
+        scope.meshScale = 2;
       }
       else {
 
 
         scope.head = [0, 1, 2, 3, 4, 5, 0, 7, 8, 9, 10, 11, 0, 13, 14, 15, 16, 17, 18, 15, 20, 21, 22, 23, 24, 25, 23, 27, 15, 29, 30, 31, 32, 33, 34, 32, 36];
         scope.tail = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37];
-        scope.meshScale = 1;
+        scope.meshScale = 2;
       }
 
 
@@ -348,16 +354,47 @@ OBJExample.prototype = {
 
     ////////////////////////////////////////////////////////////////////
 
+    const pathname= this.path.split('/')
+    const path1_last_element = pathname[pathname.length - 1]
+    const pathname2= path1_last_element.split('.')
+    const path2_last_element = pathname2[0]
+
+
+
+
+
+
     const Div = document.createElement('div');
     Div.className = 'label';
-    Div.textContent = 'Text';
+
+
+    Div.textContent = 'MTM+'+path2_last_element.replaceAll('_','+');
     Div.style.color = this.color2.getStyle();
-    Div.style.marginTop = '-1em';
+    // Div.style.marginTop = '-2em';
+    // Div.style.marginLeft = '-2em';
     this.Label = new CSS2DObject(Div);
-    this.Label.position.copy(this.mesh.position);
+    this.Label.position.copy(this.boneVisHelper.position);
+
     this.Label.visible = false; // by default dont show label
 
+    if (!this.showLabelinstant)
+    {
+      this.Label.position.y =this.Label.position.y+0.05
+    }
+
+    if (this.tail.length !== 20) //human
+    {
+      this.Label.position.y =this.Label.position.y-0.4
+    }
+    else
+    {
+          this.Label.position.x= this.Label.position.x+0.2;
+    }
+
     this.boneVisHelper.add(this.Label);
+    
+    
+      
 
 
 
@@ -480,35 +517,40 @@ let sizeOfNextStep = 0;
 /// init GLTF and GUI panels
 loadGLTF();
 /// load all demo data/s
-/// arguments (elementToBindTo, pos_x, pos_y, pos_z, showVis, reconstructed, transparentBone, transparentVertices,partialhuman)
-// const hand_1 = new OBJExample( "models/files/oursgated/OursGated_cover_uncorrupted.json",-0.5,0.3,0,false,false,false);
-// hand_1.initContent();
-// models.push(hand_1);
+/// arguments (elementToBindTo, pos_x, pos_y, pos_z, showVis, reconstructed, transparentBone, transparentVertices,partialhuman,show label)
+const hand_1 = new OBJExample( "models/files/SkipGated_MTM/SkipGated_recon_cover_corrupted.json",-0.5,0.3,0,false,false,false,false,false,true);
+hand_1.initContent();
+models.push(hand_1);
 
-// const hand_2 = new OBJExample( "models/files/oursgated/OursGated_recon_cover_uncorrupted.json",0.5,0.3,0,false,true,false,false);
-// hand_2.initContent();
-// models.push(hand_2);
+const hand_2 = new OBJExample( "models/files/SkipGated_MTM/SkipGated_recon_secret_corrupted.json",0.5,0.3,0,false,true,false,false,false,true);
+hand_2.initContent();
+models.push(hand_2);
 
-const hand_3 = new OBJExample( "models/files/Mix/OursGated_cover_uncorrupted.json",0.5,0.3,0,true,false,false);
+const hand_3 = new OBJExample( "models/files/SkipGated_MTM/SkipGated_recon_secret_uncorrupted.json",0.5,0.3,0,false,false,false,false,false,false);
 hand_3.initContent();
 models.push(hand_3);
 
-const hand_4 = new OBJExample( "models/files/Mix/OursGated_recon_cover_corrupted.json",0.5,0.3,0,true,true,false,false);
-hand_4.initContent();
-models.push(hand_4);
+
+// const hand_4 = new OBJExample( "models/files/Mix/OursGated_recon_cover_corrupted.json",0.5,0.3,0,true,true,false,false);
+// hand_4.initContent();
+// models.push(hand_4);
 
 // const hand_3 = new OBJExample("models/files/hand_output.json", 0, 0.3, 0, false, true,false,true);
 // hand_3.initContent();
 // models.push(hand_3);
 
 
-const human_1 = new OBJExample( "models/files/hand_output.json",-0.5,1.15,0,true,false,false,false,true);
+const human_1 = new OBJExample( "models/files/CMU_uncorrupted/OursGated_cover_uncorrupted.json",0.5,1.15,0,true,false,false,false,false,true);
 human_1.initContent();
 models.push(human_1); 
 
-const human_2 = new OBJExample( "models/files/Baluja_recon_secret_corrupted.json",-0.5,1.15,0,true,true,false,false);
+const human_2 = new OBJExample( "models/files/CMU_uncorrupted/OursGated_recon_cover_uncorrupted.json",-0.5,1.15,0,true,true,false,false,false,true);
 human_2.initContent();
 models.push(human_2);
+
+const human_3 = new OBJExample( "models/files/CMU_uncorrupted/OursGated_cover_uncorrupted.json",-0.5,1.15,0,true,false,false,false,false,false);
+human_3.initContent();
+models.push(human_3); 
 
 // const human_3 = new OBJExample("models/files/output.json", 0.0, 1.15, 0, true, false, false, true);
 // human_3.initContent();
@@ -859,7 +901,7 @@ function showLabel(yesno) {
 
   models.forEach(function (model) {
 
-    if (model.boneVisHelper.visible === true) {
+    if (model.boneVisHelper.visible === true ) {
       model.Label.visible = yesno;
     }
 
@@ -967,7 +1009,7 @@ function skeletonTypeToShow(skeletonType) {
   else if (skeletonType === 'human') {
     models.forEach(function (model) {
 
-      if (model.tail.length !== 20) {
+      if (model.tail.length !== 20 ) {
         model.boneVisHelper.visible = true;
         showLabel(panelSettings['show/disable label'])
       }
