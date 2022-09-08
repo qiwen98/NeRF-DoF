@@ -11,6 +11,31 @@ a {
   color: #888;
 }
 
+#container2 {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+#header {
+  position: absolute;
+  display: flex;
+  color: rgb(228, 96, 8);
+  width: 30%;
+  height: 3.2rem;
+  /* background: rgb(255, 253, 253); */
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  border-bottom: 2px solid rgb(228, 96, 8);
+  text-align: center;
+  font-weight: bold;
+  font-size: 3rem;
+
+  top: 30px;
+  flex-wrap: wrap;
+  justify-content: center;
+
+}
+
 #menubar {
   position: absolute;
   display: flex;

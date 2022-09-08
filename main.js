@@ -1,4 +1,4 @@
-import './style.css';
+import './static/style.css';
 import * as THREE from 'three';
 
 import Stats from 'three/examples//jsm/libs/stats.module.js';
@@ -358,6 +358,7 @@ OBJExample.prototype = {
     const path1_last_element = pathname[pathname.length - 1]
     const pathname2= path1_last_element.split('.')
     const path2_last_element = pathname2[0]
+    const path3=path2_last_element.split('_')[1] + '_'+ path2_last_element.split('_')[2]
 
 
 
@@ -368,7 +369,7 @@ OBJExample.prototype = {
     Div.className = 'label';
 
 
-    Div.textContent = 'MTM+'+path2_last_element.replaceAll('_','+');
+    Div.textContent = path3
     Div.style.color = this.color2.getStyle();
     // Div.style.marginTop = '-2em';
     // Div.style.marginLeft = '-2em';
@@ -377,6 +378,7 @@ OBJExample.prototype = {
 
     this.Label.visible = false; // by default dont show label
 
+
     if (!this.showLabelinstant)
     {
       this.Label.position.y =this.Label.position.y+0.05
@@ -384,6 +386,7 @@ OBJExample.prototype = {
 
     if (this.tail.length !== 20) //human
     {
+      this.Label.visible=true
       this.Label.position.y =this.Label.position.y-0.4
     }
     else
@@ -518,39 +521,55 @@ let sizeOfNextStep = 0;
 loadGLTF();
 /// load all demo data/s
 /// arguments (elementToBindTo, pos_x, pos_y, pos_z, showVis, reconstructed, transparentBone, transparentVertices,partialhuman,show label)
-const hand_1 = new OBJExample( "models/files/SkipGated_MTM/SkipGated_recon_cover_corrupted.json",-0.5,0.3,0,false,false,false,false,false,true);
+
+/// order, gt. recon ,both
+const hand_1 = new OBJExample( "models/files/oursgated_MTM/OursGated_gt_cover_uncorrupted.json",-1,0.3,0,false,false,false,false,false,true);
 hand_1.initContent();
 models.push(hand_1);
 
-const hand_2 = new OBJExample( "models/files/SkipGated_MTM/SkipGated_recon_secret_corrupted.json",0.5,0.3,0,false,true,false,false,false,true);
+const hand_2 = new OBJExample( "models/files/oursgated_MTM/OursGated_recon_cover_uncorrupted.json",0,0.3,0,false,true,false,false,false,true);
 hand_2.initContent();
 models.push(hand_2);
 
-const hand_3 = new OBJExample( "models/files/SkipGated_MTM/SkipGated_recon_secret_uncorrupted.json",0.5,0.3,0,false,false,false,false,false,false);
+const hand_3 = new OBJExample( "models/files/oursgated_MTM/OursGated_gt_cover_uncorrupted.json",1,0.3,0,false,false,false,false,false,false);
 hand_3.initContent();
 models.push(hand_3);
 
+const hand_4 = new OBJExample( "models/files/oursgated_MTM/OursGated_recon_cover_uncorrupted.json",1,0.3,0,false,true,false,false,false,true);
+hand_4.initContent();
+models.push(hand_4);
 
-// const hand_4 = new OBJExample( "models/files/Mix/OursGated_recon_cover_corrupted.json",0.5,0.3,0,true,true,false,false);
-// hand_4.initContent();
-// models.push(hand_4);
+// const hand_1 = new OBJExample( "models/files/oursgated_MTM/OursGated_recon_cover_corrupted.json",-0.5,0.3,0,false,false,false,false,false,true);
+// hand_1.initContent();
+// models.push(hand_1);
 
-// const hand_3 = new OBJExample("models/files/hand_output.json", 0, 0.3, 0, false, true,false,true);
+// const hand_2 = new OBJExample( "models/files/oursgated_MTM/OursGated_recon_secret_corrupted.json",0.5,0.3,0,false,true,false,false,false,true);
+// hand_2.initContent();
+// models.push(hand_2);
+
+// const hand_3 = new OBJExample( "models/files/oursgated_MTM/OursGated_recon_secret_uncorrupted.json",0.5,0.3,0,false,false,false,false,false,false);
 // hand_3.initContent();
 // models.push(hand_3);
 
 
-const human_1 = new OBJExample( "models/files/CMU_uncorrupted/OursGated_cover_uncorrupted.json",0.5,1.15,0,true,false,false,false,false,true);
+
+
+
+const human_1 = new OBJExample( "models/files/Oursgated_CMU/OursGated_gt_cover_uncorrupted.json",-1,1.15,0,true,false,false,false,false,true);
 human_1.initContent();
 models.push(human_1); 
 
-const human_2 = new OBJExample( "models/files/CMU_uncorrupted/OursGated_recon_cover_uncorrupted.json",-0.5,1.15,0,true,true,false,false,false,true);
+const human_2 = new OBJExample( "models/files/Oursgated_CMU/OursGated_recon_cover_uncorrupted.json",0,1.15,0,true,true,false,false,false,true);
 human_2.initContent();
 models.push(human_2);
 
-const human_3 = new OBJExample( "models/files/CMU_uncorrupted/OursGated_cover_uncorrupted.json",-0.5,1.15,0,true,false,false,false,false,false);
+const human_3 = new OBJExample( "models/files/Oursgated_CMU/OursGated_gt_cover_uncorrupted.json",1,1.15,0,true,false,false,false,false,false);
 human_3.initContent();
 models.push(human_3); 
+
+const human_4 = new OBJExample( "models/files/Oursgated_CMU/OursGated_recon_cover_uncorrupted.json",1,1.15,0,true,true,false,false,false,true);
+human_4.initContent();
+models.push(human_4); 
 
 // const human_3 = new OBJExample("models/files/output.json", 0.0, 1.15, 0, true, false, false, true);
 // human_3.initContent();
@@ -563,6 +582,14 @@ function init() {
   const container = document.getElementById('container');
   document.getElementById('file1').addEventListener('change', handleFileOneSelect, false);
   document.getElementById('file2').addEventListener('change', handleFileTwoSelect, false);
+
+  //header
+  var paragraph = document.getElementById("header");
+  var text = document.createTextNode("CMU OursGated");
+
+  paragraph.appendChild(text);
+  //header
+
   clock = new THREE.Clock();
 
   scene = new THREE.Scene();
@@ -634,9 +661,6 @@ function init() {
   labelRenderer.domElement.style.top = '0px';
   labelRenderer.domElement.style.pointerEvents = 'none';
   container.appendChild(labelRenderer.domElement);
-
-
-
 
 
 
@@ -754,6 +778,7 @@ function createPanel() {
 
 
   const panel = new GUI({ width: 310 });
+  panel.close()
 
   const folder1 = panel.addFolder('Visibility');
   const folder6 = panel.addFolder('Camera Controls');
@@ -795,7 +820,7 @@ function createPanel() {
     'set Obj Rotate Angle':1,
     'bone opacity (transparent)': 1,
     'vertices opacity (transparent)': 1,
-    'show/disable label': false,
+    'show/disable label': true,
     'show/disable dilation(post-process)': true,
     'perspective camera':switchCamera,
     'orthographic camera':switchCamera,
