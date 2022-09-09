@@ -10,3 +10,5 @@
 
 
 #### all things mentioned above done with deploy.sh
+
+#### in vite config.js the static models directory is placed under public

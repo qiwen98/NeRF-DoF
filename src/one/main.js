@@ -1,4 +1,4 @@
-import './static/style.css';
+import '../static/style.css';
 import * as THREE from 'three';
 
 import Stats from 'three/examples//jsm/libs/stats.module.js';
@@ -6,14 +6,14 @@ import { GUI } from 'three/examples//jsm/libs/lil-gui.module.min.js';
 import { OrbitControls } from 'three/examples//jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples//jsm/loaders/GLTFLoader.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/examples//jsm/renderers/CSS2DRenderer.js';
-import { CustomSkeletonHelper } from './js/customSkeletonHelper.js';
+import { CustomSkeletonHelper } from '../js/customSkeletonHelper.js';
 
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 
 // custom glsl filter
-import { DilationShader } from './js/shaders/DilationShader.js';
+import { DilationShader } from '../js/shaders/DilationShader.js';
 import { AfterimagePass } from 'three/examples/jsm/postprocessing/AfterimagePass.js';
 import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js';
 
@@ -339,7 +339,7 @@ OBJExample.prototype = {
       color: this.color2,
       size: 10,
       sizeAttenuation: false,
-      map: new THREE.TextureLoader().load('disc.png'),
+      map: new THREE.TextureLoader().load('../models/files/disc.png'),
       alphaTest: 0.5
     });
 
@@ -523,31 +523,31 @@ loadGLTF();
 /// arguments (elementToBindTo, pos_x, pos_y, pos_z, showVis, reconstructed, transparentBone, transparentVertices,partialhuman,show label)
 
 /// order, gt. recon ,both
-const hand_1 = new OBJExample( "models/files/oursgated_MTM/OursGated_gt_cover_uncorrupted.json",-1,0.3,0,false,false,false,false,false,true);
+const hand_1 = new OBJExample( "../models/files/oursgated_MTM/OursGated_gt_cover_uncorrupted.json",-1,0.3,0,false,false,false,false,false,true);
 hand_1.initContent();
 models.push(hand_1);
 
-const hand_2 = new OBJExample( "models/files/oursgated_MTM/OursGated_recon_cover_uncorrupted.json",0,0.3,0,false,true,false,false,false,true);
+const hand_2 = new OBJExample( "../models/files/oursgated_MTM/OursGated_recon_cover_uncorrupted.json",0,0.3,0,false,true,false,false,false,true);
 hand_2.initContent();
 models.push(hand_2);
 
-const hand_3 = new OBJExample( "models/files/oursgated_MTM/OursGated_gt_cover_uncorrupted.json",1,0.3,0,false,false,false,false,false,false);
+const hand_3 = new OBJExample( "../models/files/oursgated_MTM/OursGated_gt_cover_uncorrupted.json",1,0.3,0,false,false,false,false,false,false);
 hand_3.initContent();
 models.push(hand_3);
 
-const hand_4 = new OBJExample( "models/files/oursgated_MTM/OursGated_recon_cover_uncorrupted.json",1,0.3,0,false,true,false,false,false,true);
+const hand_4 = new OBJExample( "../models/files/oursgated_MTM/OursGated_recon_cover_uncorrupted.json",1,0.3,0,false,true,false,false,false,true);
 hand_4.initContent();
 models.push(hand_4);
 
-// const hand_1 = new OBJExample( "models/files/oursgated_MTM/OursGated_recon_cover_corrupted.json",-0.5,0.3,0,false,false,false,false,false,true);
+// const hand_1 = new OBJExample( "../models/files/oursgated_MTM/OursGated_recon_cover_corrupted.json",-0.5,0.3,0,false,false,false,false,false,true);
 // hand_1.initContent();
 // models.push(hand_1);
 
-// const hand_2 = new OBJExample( "models/files/oursgated_MTM/OursGated_recon_secret_corrupted.json",0.5,0.3,0,false,true,false,false,false,true);
+// const hand_2 = new OBJExample( "../models/files/oursgated_MTM/OursGated_recon_secret_corrupted.json",0.5,0.3,0,false,true,false,false,false,true);
 // hand_2.initContent();
 // models.push(hand_2);
 
-// const hand_3 = new OBJExample( "models/files/oursgated_MTM/OursGated_recon_secret_uncorrupted.json",0.5,0.3,0,false,false,false,false,false,false);
+// const hand_3 = new OBJExample( "../models/files/oursgated_MTM/OursGated_recon_secret_uncorrupted.json",0.5,0.3,0,false,false,false,false,false,false);
 // hand_3.initContent();
 // models.push(hand_3);
 
@@ -555,23 +555,23 @@ models.push(hand_4);
 
 
 
-const human_1 = new OBJExample( "models/files/Oursgated_CMU/OursGated_gt_cover_uncorrupted.json",-1,1.15,0,true,false,false,false,false,true);
+const human_1 = new OBJExample( "../models/files/Oursgated_CMU/OursGated_gt_cover_uncorrupted.json",-1,1.15,0,true,false,false,false,false,true);
 human_1.initContent();
 models.push(human_1); 
 
-const human_2 = new OBJExample( "models/files/Oursgated_CMU/OursGated_recon_cover_uncorrupted.json",0,1.15,0,true,true,false,false,false,true);
+const human_2 = new OBJExample( "../models/files/Oursgated_CMU/OursGated_recon_cover_uncorrupted.json",0,1.15,0,true,true,false,false,false,true);
 human_2.initContent();
 models.push(human_2);
 
-const human_3 = new OBJExample( "models/files/Oursgated_CMU/OursGated_gt_cover_uncorrupted.json",1,1.15,0,true,false,false,false,false,false);
+const human_3 = new OBJExample( "../models/files/Oursgated_CMU/OursGated_gt_cover_uncorrupted.json",1,1.15,0,true,false,false,false,false,false);
 human_3.initContent();
 models.push(human_3); 
 
-const human_4 = new OBJExample( "models/files/Oursgated_CMU/OursGated_recon_cover_uncorrupted.json",1,1.15,0,true,true,false,false,false,true);
+const human_4 = new OBJExample( "../models/files/Oursgated_CMU/OursGated_recon_cover_uncorrupted.json",1,1.15,0,true,true,false,false,false,true);
 human_4.initContent();
 models.push(human_4); 
 
-// const human_3 = new OBJExample("models/files/output.json", 0.0, 1.15, 0, true, false, false, true);
+// const human_3 = new OBJExample("../models/files/output.json", 0.0, 1.15, 0, true, false, false, true);
 // human_3.initContent();
 // models.push(human_3);
 
@@ -675,7 +675,7 @@ function init() {
 
 function loadGLTF() {
   const loader = new GLTFLoader();
-  loader.load('models/gltf/Xbot.glb', function (gltf) {
+  loader.load('../models/gltf/Xbot.glb', function (gltf) {
 
     model = gltf.scene;
     scene.add(model);
