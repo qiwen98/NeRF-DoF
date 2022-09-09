@@ -14,7 +14,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(root, 'index.html'),
-        nested: resolve(root, 'one', 'index2.html')
+        nested: resolve(root, 'page_one', 'index.html')
       }
     }
   }
