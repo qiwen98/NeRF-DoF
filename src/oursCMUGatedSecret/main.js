@@ -864,9 +864,10 @@ function createPanel() {
 
   // }
 
-  demoControls.push(folder1.add(panelSettings, 'show hand demo'));
-  demoControls.push(folder1.add(panelSettings, 'show human demo'));
-  demoControls.push(folder1.add(panelSettings, 'clear all scene object'));
+    // demoControls.push(folder1.add(panelSettings, 'show hand demo'));
+  // demoControls.push(folder1.add(panelSettings, 'show human demo'));
+  // demoControls.push(folder1.add(panelSettings, 'clear all scene object'));
+
 
   folder6.add(panelSettings, 'camera rotate').onChange(cameraRotate);
   folder6.add(panelSettings, 'set photo mode').onChange(setPhotoMode);
@@ -1428,7 +1429,7 @@ function animate() {
 
   // update GUI everyframe
   updateCameraGUI();
-  updateDemoControls();
+  // updateDemoControls();
   controls.update();
 
 
