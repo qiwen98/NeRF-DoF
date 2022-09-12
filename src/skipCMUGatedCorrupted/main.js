@@ -555,7 +555,7 @@ models.push(hand_4);
 
 
 
-const human_1 = new OBJExample( "../models/files/skipgated_CMU/OursGated_recon_cover_corrupted.json",-1,1.15,0,true,true,false,false,false,true);
+const human_1 = new OBJExample( "../models/files/skipgated_CMU/SkipGated_recon_cover_corrupted.json",-1,1.15,0,true,true,false,false,false,true);
 human_1.initContent();
 models.push(human_1); 
 
