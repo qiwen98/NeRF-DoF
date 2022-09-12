@@ -358,7 +358,7 @@ OBJExample.prototype = {
     const path1_last_element = pathname[pathname.length - 1]
     const pathname2= path1_last_element.split('.')
     const path2_last_element = pathname2[0]
-    const path3=path2_last_element.split('_')[1] + '_'+ path2_last_element.split('_')[2]
+    const path3=path2_last_element.split('_')[1] + '-'+ path2_last_element.split('_')[2]
 
 
 
@@ -589,7 +589,7 @@ function init() {
 
   //header
   var paragraph = document.getElementById("header");
-  var text = document.createTextNode("MTM OursGated");
+  var text = document.createTextNode("MTM - Ours");
 
   paragraph.appendChild(text);
   //header

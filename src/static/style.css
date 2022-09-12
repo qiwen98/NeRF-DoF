@@ -18,13 +18,14 @@ a {
 }
 
 #header {
+  font-family: sans-serif ;
   position: absolute;
   display: flex;
   color: rgb(228, 96, 8);
   width: 30%;
   height: 3.2rem;
   /* background: rgb(255, 253, 253); */
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  /* text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; */
   border-bottom: 2px solid rgb(228, 96, 8);
   text-align: center;
   font-weight: bold;
