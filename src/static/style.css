@@ -38,6 +38,7 @@ a {
 }
 
 #menubar {
+  color: beige;
   position: absolute;
   display: flex;
   width: 100%;
@@ -48,7 +49,7 @@ a {
   right: 0;
   bottom: 0;
   flex-wrap: wrap;
-justify-content: flex-end;
+justify-content: center;
 }
 
 #file1 {

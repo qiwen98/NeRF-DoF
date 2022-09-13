@@ -561,8 +561,8 @@ models.push(human_3);
 function init() {
 
   const container = document.getElementById('container');
-  document.getElementById('file1').addEventListener('change', handleFileOneSelect, false);
-  document.getElementById('file2').addEventListener('change', handleFileTwoSelect, false);
+  // document.getElementById('file1').addEventListener('change', handleFileOneSelect, false);
+  // document.getElementById('file2').addEventListener('change', handleFileTwoSelect, false);
   clock = new THREE.Clock();
 
   scene = new THREE.Scene();

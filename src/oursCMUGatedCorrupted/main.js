@@ -598,16 +598,27 @@ models.push(human_4);
 
 function init() {
 
+
   const container = document.getElementById('container');
-  document.getElementById('file1').addEventListener('change', handleFileOneSelect, false);
-  document.getElementById('file2').addEventListener('change', handleFileTwoSelect, false);
+  // document.getElementById('file1').addEventListener('change', handleFileOneSelect, false);
+  // document.getElementById('file2').addEventListener('change', handleFileTwoSelect, false);
+
+
 
   //header
   var paragraph = document.getElementById("header");
   var text = document.createTextNode("CMU - Ours");
-
   paragraph.appendChild(text);
   //header
+
+
+  // //footer
+  // var paragraph2 = document.getElementById("menubar");
+  // var text2 = document.createTextNode("If you bump into unsync animations, please F5 refresh");
+  // paragraph2.appendChild(text2);
+  // //footer
+
+
 
   clock = new THREE.Clock();
 
