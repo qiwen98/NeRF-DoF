@@ -358,9 +358,20 @@ OBJExample.prototype = {
     const path1_last_element = pathname[pathname.length - 1]
     const pathname2= path1_last_element.split('.')
     const path2_last_element = pathname2[0]
-    const path3=path2_last_element.split('_')[1] + '-'+ path2_last_element.split('_')[2]
+    const iscorrupted=path2_last_element.split('_')[3]
+    var path3 = null
+
+    if (iscorrupted==='corrupted')
+    {
+      path3=path2_last_element.split('_')[1] + '-'+ path2_last_element.split('_')[2] + '-'+ path2_last_element.split('_')[3]
+    }
+    else
+    {
+      path3=path2_last_element.split('_')[1] + '-'+ path2_last_element.split('_')[2]
+    }
 
 
+    
 
 
 
@@ -555,23 +566,27 @@ models.push(hand_4);
 
 
 
-const human_1 = new OBJExample( "../models/files/Oursgated_CMU/OursGated_recon_cover_corrupted.json",-1,1.15,0,true,true,false,false,false,true);
+const human_1 = new OBJExample( "../models/files/Oursgated_CMU/OursGated_recon_cover_uncorrupted.json",-1.5,1.15,0,true,true,false,false,false,true);
 human_1.initContent();
 models.push(human_1); 
 
-const human_1_2 = new OBJExample( "../models/files/Oursgated_CMU/OursGated_gt_cover_uncorrupted.json",-1,1.15,0,true,false,false,false,false,false);
+const human_1_2 = new OBJExample( "../models/files/Oursgated_CMU/OursGated_gt_cover_uncorrupted.json",-1.5,1.15,0,true,false,false,false,false,false);
 human_1_2.initContent();
 models.push(human_1_2); 
 
-const human_2 = new OBJExample( "../models/files/Oursgated_CMU/OursGated_recon_secret_corrupted.json",0,1.15,0,true,true,false,false,false,true);
+const human_1_3 = new OBJExample( "../models/files/Oursgated_CMU/OursGated_recon_cover_corrupted.json",-0.5,1.15,0,true,true,false,false,false,false);
+human_1_3.initContent();
+models.push(human_1_3); 
+
+const human_2 = new OBJExample( "../models/files/Oursgated_CMU/OursGated_recon_secret_corrupted.json",0.5,1.15,0,true,true,false,false,false,true);
 human_2.initContent();
 models.push(human_2);
 
-const human_3 = new OBJExample( "../models/files/Oursgated_CMU/OursGated_gt_secret_uncorrupted.json",1,1.15,0,true,false,false,false,false,false);
+const human_3 = new OBJExample( "../models/files/Oursgated_CMU/OursGated_gt_secret_uncorrupted.json",1.5,1.15,0,true,false,false,false,false,false);
 human_3.initContent();
 models.push(human_3); 
 
-const human_4 = new OBJExample( "../models/files/Oursgated_CMU/OursGated_recon_secret_uncorrupted.json",1,1.15,0,true,true,false,false,false,true);
+const human_4 = new OBJExample( "../models/files/Oursgated_CMU/OursGated_recon_secret_corrupted.json",1.5,1.15,0,true,true,false,false,false,true);
 human_4.initContent();
 models.push(human_4); 
 

@@ -358,7 +358,17 @@ OBJExample.prototype = {
     const path1_last_element = pathname[pathname.length - 1]
     const pathname2= path1_last_element.split('.')
     const path2_last_element = pathname2[0]
-    const path3=path2_last_element.split('_')[1] + '-'+ path2_last_element.split('_')[2]
+    const iscorrupted=path2_last_element.split('_')[3]
+    var path3 = null
+
+    if (iscorrupted==='corrupted')
+    {
+      path3=path2_last_element.split('_')[1] + '-'+ path2_last_element.split('_')[2] + '-'+ path2_last_element.split('_')[3]
+    }
+    else
+    {
+      path3=path2_last_element.split('_')[1] + '-'+ path2_last_element.split('_')[2]
+    }
 
 
 
