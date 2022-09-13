@@ -533,25 +533,29 @@ loadGLTF();
 /// arguments (elementToBindTo, pos_x, pos_y, pos_z, showVis, reconstructed, transparentBone, transparentVertices,partialhuman,show label)
 
 /// order, gt. recon ,both
-const hand_1 = new OBJExample( "../models/files/skipgated_MTM/SkipGated_recon_cover_corrupted.json",-1,0.3,0,true,true,false,false,false,true);
+const hand_1 = new OBJExample( "../models/files/skipgated_MTM/SkipGated_recon_cover_uncorrupted.json",-1.5,0.3,0,true,true,false,false,false,true);
 hand_1.initContent();
-models.push(hand_1);
+models.push(hand_1); 
 
-const hand_1_2 = new OBJExample( "../models/files/skipgated_MTM/SkipGated_gt_cover_uncorrupted.json",-1,0.3,0,true,false,false,false,false,false);
+const hand_1_2 = new OBJExample( "../models/files/skipgated_MTM/SkipGated_gt_cover_uncorrupted.json",-1.5,0.3,0,true,false,false,false,false,false);
 hand_1_2.initContent();
-models.push(hand_1_2);
+models.push(hand_1_2); 
 
-const hand_2 = new OBJExample( "../models/files/skipgated_MTM/SkipGated_recon_secret_corrupted.json",0,0.3,0,true,true,false,false,false,true);
+const hand_1_3 = new OBJExample( "../models/files/skipgated_MTM/SkipGated_recon_cover_corrupted.json",-0.5,0.3,0,true,true,false,false,false,false);
+hand_1_3.initContent();
+models.push(hand_1_3); 
+
+const hand_2 = new OBJExample( "../models/files/skipgated_MTM/SkipGated_recon_secret_corrupted.json",0.5,0.3,0,true,true,false,false,false,true);
 hand_2.initContent();
 models.push(hand_2);
 
-const hand_3 = new OBJExample( "../models/files/skipgated_MTM/SkipGated_gt_secret_uncorrupted.json",1,0.3,0,true,false,false,false,false,false);
+const hand_3 = new OBJExample( "../models/files/skipgated_MTM/SkipGated_gt_secret_uncorrupted.json",1.5,0.3,0,true,false,false,false,false,false);
 hand_3.initContent();
-models.push(hand_3);
+models.push(hand_3); 
 
-const hand_4 = new OBJExample( "../models/files/skipgated_MTM/SkipGated_recon_secret_corrupted.json",1,0.3,0,true,true,false,false,false,true);
+const hand_4 = new OBJExample( "../models/files/skipgated_MTM/SkipGated_recon_secret_corrupted.json",1.5,0.3,0,true,true,false,false,false,true);
 hand_4.initContent();
-models.push(hand_4);
+models.push(hand_4); 
 
 // const hand_1 = new OBJExample( "../models/files/oursgated_MTM/OursGated_recon_cover_corrupted.json",-0.5,0.3,0,false,false,false,false,false,true);
 // hand_1.initContent();
