@@ -595,7 +595,7 @@ function init() {
 
   //header
   var paragraph = document.getElementById("header");
-  var text = document.createTextNode("CMU - Ours");
+  var text = document.createTextNode("CMU - Our Method");
 
   paragraph.appendChild(text);
   //header

@@ -607,14 +607,14 @@ function init() {
 
   //header
   var paragraph = document.getElementById("header");
-  var text = document.createTextNode("CMU - Ours");
+  var text = document.createTextNode("CMU - Our Method");
   paragraph.appendChild(text);
   //header
 
 
   // //footer
   // var paragraph2 = document.getElementById("menubar");
-  // var text2 = document.createTextNode("If you bump into unsync animations, please F5 refresh");
+  // var text2 = document.createTextNode("If you bump into unsync animations, please refresh your web browser");
   // paragraph2.appendChild(text2);
   // //footer
 

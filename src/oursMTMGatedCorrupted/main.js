@@ -603,7 +603,7 @@ function init() {
 
   //header
   var paragraph = document.getElementById("header");
-  var text = document.createTextNode("MTM - Ours");
+  var text = document.createTextNode("MTM - Our Method");
 
   paragraph.appendChild(text);
   //header
