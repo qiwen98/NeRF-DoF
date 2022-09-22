@@ -18,6 +18,14 @@ import { AfterimagePass } from 'three/examples/jsm/postprocessing/AfterimagePass
 import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js';
 
 
+Object.defineProperty(String.prototype, 'capitalize', {
+  value: function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+  },
+  enumerable: false
+});
+
+
 
 
 

@@ -18,6 +18,14 @@ import { AfterimagePass } from 'three/examples/jsm/postprocessing/AfterimagePass
 import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js';
 
 
+Object.defineProperty(String.prototype, 'capitalize', {
+  value: function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+  },
+  enumerable: false
+});
+
+
 
 
 
@@ -363,11 +371,11 @@ OBJExample.prototype = {
 
     if (iscorrupted==='corrupted')
     {
-      path3=path2_last_element.split('_')[1] + '-'+ path2_last_element.split('_')[2] + '-'+ path2_last_element.split('_')[3]
+      path3=path2_last_element.split('_')[3].capitalize() + ' '+ path2_last_element.split('_')[1].capitalize() + ' '+ path2_last_element.split('_')[2].capitalize()
     }
     else
     {
-      path3=path2_last_element.split('_')[1] + '-'+ path2_last_element.split('_')[2]
+      path3= path2_last_element.split('_')[1].capitalize() + ' '+ path2_last_element.split('_')[2].capitalize();
     }
 
 
@@ -392,7 +400,9 @@ OBJExample.prototype = {
     if (!this.showLabelinstant)
     {
       this.Label.position.y =this.Label.position.y+0.05
+
     }
+
 
     if (this.tail.length !== 20) //human
     {
@@ -537,7 +547,7 @@ const hand_1 = new OBJExample( "../models/files/oursgated_MTM/OursGated_gt_cover
 hand_1.initContent();
 models.push(hand_1);
 
-const hand_2 = new OBJExample( "../models/files/oursgated_MTM/OursGated_recon_cover_uncorrupted.json",0,0.3,0,true,true,false,false,false,true);
+const hand_2 = new OBJExample( "../models/files/oursgated_MTM/OursGated_reconstructed_cover_uncorrupted.json",0,0.3,0,true,true,false,false,false,true);
 hand_2.initContent();
 models.push(hand_2);
 
@@ -545,19 +555,19 @@ const hand_3 = new OBJExample( "../models/files/oursgated_MTM/OursGated_gt_cover
 hand_3.initContent();
 models.push(hand_3);
 
-const hand_4 = new OBJExample( "../models/files/oursgated_MTM/OursGated_recon_cover_uncorrupted.json",1,0.3,0,true,true,false,false,false,true);
+const hand_4 = new OBJExample( "../models/files/oursgated_MTM/OursGated_reconstructed_cover_uncorrupted.json",1,0.3,0,true,true,false,false,false,true);
 hand_4.initContent();
 models.push(hand_4);
 
-// const hand_1 = new OBJExample( "../models/files/oursgated_MTM/OursGated_recon_cover_corrupted.json",-0.5,0.3,0,false,false,false,false,false,true);
+// const hand_1 = new OBJExample( "../models/files/oursgated_MTM/OursGated_reconstructed_cover_corrupted.json",-0.5,0.3,0,false,false,false,false,false,true);
 // hand_1.initContent();
 // models.push(hand_1);
 
-// const hand_2 = new OBJExample( "../models/files/oursgated_MTM/OursGated_recon_secret_corrupted.json",0.5,0.3,0,false,true,false,false,false,true);
+// const hand_2 = new OBJExample( "../models/files/oursgated_MTM/OursGated_reconstructed_secret_corrupted.json",0.5,0.3,0,false,true,false,false,false,true);
 // hand_2.initContent();
 // models.push(hand_2);
 
-// const hand_3 = new OBJExample( "../models/files/oursgated_MTM/OursGated_recon_secret_uncorrupted.json",0.5,0.3,0,false,false,false,false,false,false);
+// const hand_3 = new OBJExample( "../models/files/oursgated_MTM/OursGated_reconstructed_secret_uncorrupted.json",0.5,0.3,0,false,false,false,false,false,false);
 // hand_3.initContent();
 // models.push(hand_3);
 
@@ -569,7 +579,7 @@ models.push(hand_4);
 // human_1.initContent();
 // models.push(human_1); 
 
-// const human_2 = new OBJExample( "../models/files/Oursgated_CMU/OursGated_recon_cover_uncorrupted.json",0,1.15,0,true,true,false,false,false,true);
+// const human_2 = new OBJExample( "../models/files/Oursgated_CMU/OursGated_reconstructed_cover_uncorrupted.json",0,1.15,0,true,true,false,false,false,true);
 // human_2.initContent();
 // models.push(human_2);
 
@@ -577,7 +587,7 @@ models.push(hand_4);
 // human_3.initContent();
 // models.push(human_3); 
 
-// const human_4 = new OBJExample( "../models/files/Oursgated_CMU/OursGated_recon_cover_uncorrupted.json",1,1.15,0,true,true,false,false,false,true);
+// const human_4 = new OBJExample( "../models/files/Oursgated_CMU/OursGated_reconstructed_cover_uncorrupted.json",1,1.15,0,true,true,false,false,false,true);
 // human_4.initContent();
 // models.push(human_4); 
 
