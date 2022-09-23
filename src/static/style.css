@@ -75,6 +75,11 @@ justify-content: center;
   font-family: sans-serif;
   padding: 2px;
   background: rgba( 0, 0, 0, .6 );
+
+  width: 12%;
+  flex-wrap: wrap;
+  text-align: center;
+
 }
 
 #selection {

@@ -375,7 +375,12 @@ OBJExample.prototype = {
     }
     else
     {
-      path3= path2_last_element.split('_')[1].capitalize() + ' '+ path2_last_element.split('_')[2].capitalize();
+            path3= path2_last_element.split('_')[1].capitalize() + ' '+ path2_last_element.split('_')[2].capitalize();
+
+      if (!this.isReConstructed)
+      {
+        path3= path2_last_element.split('_')[2].capitalize()
+      }
     }
 
 
