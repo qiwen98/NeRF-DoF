@@ -26,6 +26,9 @@ export default defineConfig({
         page10: resolve(root, 'skipMTMGatedCover', 'index.html'),
         page11: resolve(root, 'skipMTMGatedSecret', 'index.html'),
         page12: resolve(root, 'skipMTMGatedCorrupted', 'index.html'),
+        page13: resolve(root, 'oursMixGatedCover', 'index.html'),
+        page14: resolve(root, 'oursMixGatedSecret', 'index.html'),
+        page15: resolve(root, 'oursMixGatedCorrupted', 'index.html'),
       }
     }
   }
