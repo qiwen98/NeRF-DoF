@@ -413,7 +413,7 @@ OBJExample.prototype = {
     if (this.tail.length !== 20) //human
     {
       this.Label.visible=true
-      this.Label.position.y =this.Label.position.y-0.4
+      this.Label.position.y =this.Label.position.y-0.5
     }
     else
     {     this.Label.visible=true

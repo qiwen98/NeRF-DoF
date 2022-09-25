@@ -407,6 +407,8 @@ OBJExample.prototype = {
 
     this.Label.visible = false; // by default dont show label
 
+    this.Label.position.y =this.Label.position.y-0.15
+
 
     if (!this.showLabelinstant)
     {

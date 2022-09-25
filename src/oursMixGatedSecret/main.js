@@ -401,11 +401,14 @@ OBJExample.prototype = {
 
     this.Label.visible = false; // by default dont show label
 
+    this.Label.position.y =this.Label.position.y-0.15
+
 
     if (!this.showLabelinstant)
     {
       this.Label.position.y =this.Label.position.y+0.05
     }
+    
 
     if (this.tail.length !== 20) //human
     {
@@ -546,19 +549,19 @@ loadGLTF();
 /// arguments (elementToBindTo, pos_x, pos_y, pos_z, showVis, reconstructed, transparentBone, transparentVertices,partialhuman,show label)
 
 /// order, gt. recon ,both
-const hand_1 = new OBJExample( "../models/files/Oursgated_Mix/OursGated_gt_secret_uncorrupted.json",-1,0.3,0,true,false,false,false,false,true);
+const hand_1 = new OBJExample( "../models/files/Oursgated_Mix/OursGated_gt_secret_uncorrupted.json",-1,0.5,0,true,false,false,false,false,true);
 hand_1.initContent();
 models.push(hand_1);
 
-const hand_2 = new OBJExample( "../models/files/Oursgated_Mix/OursGated_reconstructed_secret_uncorrupted.json",0,0.3,0,true,true,false,false,false,true);
+const hand_2 = new OBJExample( "../models/files/Oursgated_Mix/OursGated_reconstructed_secret_uncorrupted.json",0,0.5,0,true,true,false,false,false,true);
 hand_2.initContent();
 models.push(hand_2);
 
-const hand_3 = new OBJExample( "../models/files/Oursgated_Mix/OursGated_gt_secret_uncorrupted.json",1,0.3,0,true,false,false,false,false,false);
+const hand_3 = new OBJExample( "../models/files/Oursgated_Mix/OursGated_gt_secret_uncorrupted.json",1,0.5,0,true,false,false,false,false,false);
 hand_3.initContent();
 models.push(hand_3);
 
-const hand_4 = new OBJExample( "../models/files/Oursgated_Mix/OursGated_reconstructed_secret_uncorrupted.json",1,0.3,0,true,true,false,false,false,true);
+const hand_4 = new OBJExample( "../models/files/Oursgated_Mix/OursGated_reconstructed_secret_uncorrupted.json",1,0.5,0,true,true,false,false,false,true);
 hand_4.initContent();
 models.push(hand_4);
 
