@@ -1,5 +1,5 @@
 {
-  "name": "stegano-m-vis",
+  "name": "NeRF_DoF",
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",

@@ -9,7 +9,7 @@
     content="DSteganoM: Deep Steganography for Motion Capture Data">
   <meta name="keywords" content="DSteganoM: Deep Steganography for Motion Capture Data">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>DSteganoM: Deep Steganography for Motion Capture Data</title>
+  <title>Reconstructing-NeRF with DoF Images</title>
 
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-TRBLTJFL16"></script>
@@ -37,7 +37,7 @@
   <script src="./static/js/bulma-carousel.min.js"></script>
   <script src="./static/js/bulma-slider.min.js"></script>
   <script src="./static/js/index.js"></script>
-  <link rel="stylesheet" href="/DSteganoM/assets/main.aceab480.css">
+  <link rel="stylesheet" href="/NeRF-DoF/assets/main.aceab480.css">
 </head>
 
 <body>
@@ -88,36 +88,21 @@
       <div class="container is-max-desktop">
         <div class="columns is-centered">
           <div class="column has-text-centered">
-            <h1 class="title is-1 publication-title">DSteganoM: Deep Steganography for Motion Capture Data</h1>
+            <h1 class="title is-1 publication-title">Reconstructing-NeRF with DoF Images</h1>
             <div class="is-size-5 publication-authors">
               <span class="author-block">
                 <a href="https://qiwen98.github.io/">Qi Wen Gan</a><sup>1</sup>,</span>
               <span class="author-block">
-                <a >Wei-Chuen Yau</a><sup>1</sup>,</span>
+                <a >Yu-Wen Michael Zhang</a><sup>1</sup>,</span>
               <span class="author-block">
-                <a >Y.S. Gan</a><sup>2</sup>,
-              </span>
-              <span class="author-block">
-                <a >Iftekhar Salam</a><sup>1</sup>,
-              </span>
-              <span class="author-block">
-                <a >Shihui Guo</a><sup>3</sup>,
-              </span>
-              <span class="author-block">
-                <a >Chin-Chen Chang</a><sup>2</sup>,
-              </span>
-              <span class="author-block">
-                <a >Yubing Wu</a><sup>1</sup>
-              </span>
-              <span class="author-block">
-                <a >Luchen Zhou</a><sup>1</sup>
+                <a >Ruiqi Zhang</a><sup>2</sup>,
               </span>
             </div>
 
             <div class="is-size-5 publication-authors">
-              <span class="author-block"><sup>1</sup>Xiamen University Malaysia, </span>
-              <span class="author-block"><sup>2</sup>Feng Chia University, </span>
-              <span class="author-block"><sup>3</sup>Xiamen University </span> 
+              <span class="author-block"><sup>1</sup>Department of CST, Tsinghua University, </span>
+              <span class="author-block"><sup>2</sup>Department of Mathematical Sciences, Tsinghua University
+              </span>
               
             </div>
 
@@ -140,20 +125,17 @@
   <section class="hero teaser">
     <div class="container is-max-desktop">
       <div class="hero-body">
-  
-        <h2 class="subtitle has-text-centered">
-            <b>One-sentence summary:</b>
-          Hiding <span style="color: #38761d">Mocap Data</span> from
-          one <span style="color:  #3cd703">Skeleton Animation</span> to
-          another <span style="color: #ff9d00">Skeleton Animation</span> using
-          end-to-end <span style="color: #1155cc">Deep Neural Network.</span>
-        </h2>
-        <br/>
-        <br/>
+
   
         <h2 class="subtitle has-text-centered">         
-          <!-- <img src="./models/pics/Stegano-M Flow.png" alt="description" width="900"> -->
-          <p>⚠️</p><span class="dnerf"></span> Please click on each of the following pictures to view the corresponding sample animation.
+          <img src="./models/pics/Demo.png" alt="description" width="900">
+          <!-- <p>⚠️</p><span class="dnerf"></span> Please click on each of the following pictures to view the corresponding sample animation. -->
+          
+        </h2>
+        <h2 class="subtitle has-text-centered pb-5 mb-5">
+          <b>Purpose/Goal :</b>
+        Reconstucting <span style="color: #3cd703"> Depth-of-Field (DoF) NeRF</span> end-to-end with 
+        <span style="color: #ff9d00">Depth of Field images</span> 
         </h2>
   
       </div>
@@ -162,37 +144,47 @@
 
   <section class="section">
     <div class="container is-max-desktop">
-        <h2 class="subtitle has-text-centered pb-4">
-          <b>Sample One :</b>
-        Hiding one <span style="color: #3cd703">Human Skeleton Animation</span> inside
-        another <span style="color: #ff9d00">Human Skeleton Animation</span> 
-        </h2>
-      <h2 class="subtitle is-3 has-text-centered mb-5 ">CMU - Our Method</h2>
+        
+      <h2 class="title">Qualitative Result</h2>
+      <h2 class="subtitle is-3 has-text-centered mb-5 ">NeRF</h2>
       <div class="columns is-centered mb-5 ">
 
+          <!-- Visual Effects. -->
+          <div class="column">
+            <div class="content">
+              <h2 class="title is-4">Leaves</h2>
+              <!-- <p>
+                Using <i>nerfies</i> you can create fun visual effects. This Dolly zoom effect
+                would be impossible without nerfies since it would require going through a wall.
+              </p> -->
+              <a class="" href="./oursCMUGatedCover/"><img class="button is-link is-inverted " src="./models/pics/Leaves.gif" style="height: max-content;"></a>
+            </div>
+          </div>
+          <!--/ Visual Effects. -->
+
         <!-- Visual Effects. -->
         <div class="column">
           <div class="content">
-            <h2 class="title is-4">Cover</h2>
+            <h2 class="title is-4">Fortress</h2>
             <!-- <p>
               Using <i>nerfies</i> you can create fun visual effects. This Dolly zoom effect
               would be impossible without nerfies since it would require going through a wall.
             </p> -->
-            <a class="" href="./oursCMUGatedCover/"><img class="button is-link is-inverted " src="./models/pics/oursCMUGatedCover.png" style="height: max-content;"></a>
+            <a class="" href="./oursCMUGatedCover/"><img class="button is-link is-inverted " src="./models/pics/fortress.gif" style="height: max-content;"></a>
           </div>
         </div>
         <!--/ Visual Effects. -->
 
         <!-- Matting. -->
         <div class="column">
-          <h2 class="title is-4">Secret</h2>
+          <h2 class="title is-4">Trex</h2>
           <div class="columns is-centered">
             <div class="column content">
               <!-- <p>
                 As a byproduct of our method, we can also solve the matting problem by ignoring
                 samples that fall outside of a bounding box during rendering.
               </p> -->
-              <a class="" href="./oursCMUGatedSecret/"><img style="height: max-content;" class="button is-link is-inverted"  src="./models/pics/oursCMUGatedSecret.png" ></a>
+              <a class="" href="./oursCMUGatedSecret/"><img style="height: max-content;" class="button is-link is-inverted"  src="./models/pics/trex.gif" ></a>
             </div>
 
           </div>
@@ -200,14 +192,14 @@
 
         <!-- Matting. -->
         <div class="column">
-          <h2 class="title is-4">Corrupted Setting</h2>
+          <h2 class="title is-4">Room</h2>
           <div class="columns is-centered">
             <div class="column content">
               <!-- <p>
                 As a byproduct of our method, we can also solve the matting problem by ignoring
                 samples that fall outside of a bounding box during rendering.
               </p> -->
-              <a class="" href="./oursCMUGatedCorrupted/"><img class="button is-link is-inverted " src="./models/pics/oursCMUGatedCorrupted.png" style="height: max-content;"></a>
+              <a class="" href="./oursCMUGatedCorrupted/"><img class="button is-link is-inverted " src="./models/pics/Room.gif" style="height: max-content;"></a>
             </div>
 
           </div>
@@ -215,240 +207,88 @@
       </div>
 
       <!--/ end of first column -->
-      <h2 class="subtitle is-3 has-text-centered mb-5 ">CMU - SkipGated</h2>
+      <h2 class="subtitle is-3 has-text-centered mb-5 ">Ours finetune w/Relu</h2>
       <div class="columns is-centered mb-5">
 
-        <!-- Visual Effects. -->
-        <div class="column">
-          <div class="content">
-            <h2 class="title is-4">Cover</h2>
-            <!-- <p>
-              Using <i>nerfies</i> you can create fun visual effects. This Dolly zoom effect
-              would be impossible without nerfies since it would require going through a wall.
-            </p> -->
-            <a class="" href="./skipCMUGatedCover/"><img class="button is-link is-inverted " src="./models/pics/skipCMUGatedCover.png" style="height: max-content;"></a>
-          </div>
-        </div>
-        <!--/ Visual Effects. -->
-
-        <!-- Matting. -->
-        <div class="column">
-          <h2 class="title is-4">Secret</h2>
-          <div class="columns is-centered">
-            <div class="column content">
-              <!-- <p>
-                As a byproduct of our method, we can also solve the matting problem by ignoring
-                samples that fall outside of a bounding box during rendering.
-              </p> -->
-              <a class="" href="./skipCMUGatedSecret/"><img class="button is-link is-inverted " src="./models/pics/skipCMUGatedSecret.png" style="height: max-content;"></a>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- Matting. -->
-        <div class="column">
-          <h2 class="title is-4">Corrupted Setting</h2>
-          <div class="columns is-centered">
-            <div class="column content">
-              <!-- <p>
-                As a byproduct of our method, we can also solve the matting problem by ignoring
-                samples that fall outside of a bounding box during rendering.
-              </p> -->
-              <a class="" href="./skipCMUGatedCorrupted/"><img class="button is-link is-inverted " src="./models/pics/skipCMUGatedCorrupted.png" style="height: max-content;"></a>
-              
-            </div>
-
-          </div>
-        </div>
+                  <!-- Visual Effects. -->
+                  <div class="column">
+                    <div class="content">
+                      <h2 class="title is-4">Leaves</h2>
+                      <!-- <p>
+                        Using <i>nerfies</i> you can create fun visual effects. This Dolly zoom effect
+                        would be impossible without nerfies since it would require going through a wall.
+                      </p> -->
+                      <a class="" href="./oursCMUGatedCover/"><img class="button is-link is-inverted " src="./models/pics/bokeh_leaves.gif" style="height: max-content;"></a>
+                    </div>
+                  </div>
+                  <!--/ Visual Effects. -->
+        
+                <!-- Visual Effects. -->
+                <div class="column">
+                  <div class="content">
+                    <h2 class="title is-4">Fortress</h2>
+                    <!-- <p>
+                      Using <i>nerfies</i> you can create fun visual effects. This Dolly zoom effect
+                      would be impossible without nerfies since it would require going through a wall.
+                    </p> -->
+                    <a class="" href="./oursCMUGatedCover/"><img class="button is-link is-inverted " src="./models/pics/bokeh_fortress.gif" style="height: max-content;"></a>
+                  </div>
+                </div>
+                <!--/ Visual Effects. -->
+        
+                <!-- Matting. -->
+                <div class="column">
+                  <h2 class="title is-4">Trex</h2>
+                  <div class="columns is-centered">
+                    <div class="column content">
+                      <!-- <p>
+                        As a byproduct of our method, we can also solve the matting problem by ignoring
+                        samples that fall outside of a bounding box during rendering.
+                      </p> -->
+                      <a class="" href="./oursCMUGatedSecret/"><img style="height: max-content;" class="button is-link is-inverted"  src="./models/pics/bokeh_trex.gif" ></a>
+                    </div>
+        
+                  </div>
+                </div>
+        
+                <!-- Matting. -->
+                <div class="column">
+                  <h2 class="title is-4">Room</h2>
+                  <div class="columns is-centered">
+                    <div class="column content">
+                      <!-- <p>
+                        As a byproduct of our method, we can also solve the matting problem by ignoring
+                        samples that fall outside of a bounding box during rendering.
+                      </p> -->
+                      <a class="" href="./oursCMUGatedCorrupted/"><img class="button is-link is-inverted " src="./models/pics/bokeh_room.gif" style="height: max-content;"></a>
+                    </div>
+        
+                  </div>
+                </div>
       </div>
-
-    </div>
-  </section>
-
-
-  <section class="section">
-    <div class="container is-max-desktop">
-
-      <h2 class="subtitle has-text-centered pb-4">
-        <b>Sample Two:</b>
-      Hiding one <span style="color: #3cd703">Hand Skeleton Animation</span> inside
-      another <span style="color: #ff9d00">Hand Skeleton Animation</span> 
-      </h2>
-      
-      <!--/ end of first column -->
-      <h2 class="subtitle is-3 has-text-centered mb-5">MTM - Our Method</h2>
-      <div class="columns is-centered mb-5">
-
-        <!-- Visual Effects. -->
-        <div class="column">
-          <div class="content">
-            <h2 class="title is-4">Cover</h2>
-            <!-- <p>
-              Using <i>nerfies</i> you can create fun visual effects. This Dolly zoom effect
-              would be impossible without nerfies since it would require going through a wall.
-            </p> -->
-            <a class="" href="./oursMTMGatedCover/"><img class="button is-link is-inverted " src="./models/pics/oursMTMGatedCover.png" style="height: max-content;"></a>
-          </div>
-        </div>
-        <!--/ Visual Effects. -->
-
-        <!-- Matting. -->
-        <div class="column">
-          <h2 class="title is-4">Secret</h2>
-          <div class="columns is-centered">
-            <div class="column content">
-              <!-- <p>
-                As a byproduct of our method, we can also solve the matting problem by ignoring
-                samples that fall outside of a bounding box during rendering.
-              </p> -->
-
-                <a class="" href="./oursMTMGatedSecret/"><img class="button is-link is-inverted " src="./models/pics/oursMTMGatedSecret.png" style="height: max-content;"></a>
-              
-            </div>
-
-          </div>
-        </div>
-
-        <!-- Matting. -->
-        <div class="column">
-          <h2 class="title is-4">Corrupted Setting</h2>
-          <div class="columns is-centered">
-            <div class="column content">
-              <!-- <p>
-                As a byproduct of our method, we can also solve the matting problem by ignoring
-                samples that fall outside of a bounding box during rendering.
-              </p> -->
-              <a class="" href="./oursMTMGatedCorrupted/"><img class="button is-link is-inverted " src="./models/pics/oursMTMGatedCorrupted.png" style="height: max-content;"></a>
-              
-            </div>
-
-          </div>
-        </div>
-      </div>
-      <!--/ Matting. -->
-
-      <!--/ end of first column -->
-      <h2 class="subtitle is-3 has-text-centered mb-5">MTM - SkipGated</h2>
-      <div class="columns is-centered mb-5">
-
-        <!-- Visual Effects. -->
-        <div class="column">
-          <div class="content">
-            <h2 class="title is-4">Cover</h2>
-            <!-- <p>
-              Using <i>nerfies</i> you can create fun visual effects. This Dolly zoom effect
-              would be impossible without nerfies since it would require going through a wall.
-            </p> -->
-            <a class="" href="./skipMTMGatedCover/"><img class="button is-link is-inverted " src="./models/pics/skipMTMGatedCover.png" style="height: max-content;"></a>
-          </div>
-        </div>
-        <!--/ Visual Effects. -->
-
-        <!-- Matting. -->
-        <div class="column">
-          <h2 class="title is-4">Secret</h2>
-          <div class="columns is-centered">
-            <div class="column content">
-              <!-- <p>
-                As a byproduct of our method, we can also solve the matting problem by ignoring
-                samples that fall outside of a bounding box during rendering.
-              </p> -->
-
-                <a class="" href="./skipMTMGatedSecret/"><img class="button is-link is-inverted " src="./models/pics/skipMTMGatedSecret.png" style="height: max-content;"></a>
-              
-            </div>
-
-          </div>
-        </div>
-
-        <!-- Matting. -->
-        <div class="column">
-          <h2 class="title is-4">Corrupted Setting</h2>
-          <div class="columns is-centered">
-            <div class="column content">
-              <!-- <p>
-                As a byproduct of our method, we can also solve the matting problem by ignoring
-                samples that fall outside of a bounding box during rendering.
-              </p> -->
-              <a class="" href="./skipMTMGatedCorrupted/"><img class="button is-link is-inverted " src="./models/pics/skipMTMGatedCorrupted.png" style="height: max-content;"></a>
-              
-            </div>
-
-          </div>
-        </div>
-      </div>
-      <!--/ Matting. -->
 
 
     </div>
   </section>
 
-  <!--/ <section class="section">
-    <div class="container is-max-desktop">
-
-      <h2 class="subtitle has-text-centered pb-4">
-        <b>Task Three:</b>
-      Hiding one <span style="color: #3cd703">Hand Skeleton Animation</span> inside
-      another <span style="color: #ff9d00">Human Skeleton Animation</span> 
-      </h2> 
-      
-
-      <h2 class="subtitle is-3 has-text-centered mb-5"> Our Method</h2>
-      <div class="columns is-centered mb-5">
-
-
-        <div class="column">
-          <div class="content">
-            <h2 class="title is-4">Cover</h2>
-
-            <a class="" href=""><img class="button is-link is-inverted " src="./models/pics/MixedCover.png" style="height: max-content;"></a>
-          </div>
-        </div>
-
-        <div class="column">
-          <h2 class="title is-4">Secret</h2>
-          <div class="columns is-centered">
-            <div class="column content">
-
-
-                <a class="" href=""><img class="button is-link is-inverted " src="./models/pics/MixedSecret.png" style="height: max-content;"></a>
-              
-            </div>
-
-          </div>
-        </div>
-
-        <div class="column">
-          <h2 class="title is-4">Corrupted Setting</h2>
-          <div class="columns is-centered">
-            <div class="column content">
-
-              <a class="" href=""><img class="button is-link is-inverted " src="./models/pics/MixedCorrupted.png" style="height: max-content;"></a>
-              
-            </div>
-
-          </div>
-        </div>
-      </div>
-
-
+  <section class="section" id="Quantitative"> 
+    <div class="container is-max-desktop content">
+    <h2 class="title ">Results</h2>
+    <div class="columns is-centered mb-5">
+      <img src="./models/pics/Result.png" alt="description" width="900">   
     </div>
-  </section>-->
+  </div>
 
-
-
-
-
+  </section>
 
 
 
   <section class="section" id="BibTeX">
     <div class="container is-max-desktop content">
       <h2 class="title">BibTeX</h2>
-      <pre><code>@article{DSteganoM2022,
-  author    = {Qi Wen, Gan and Wei-Chuen, Yau and Y.S., Gan and Iftekhar, Salam and Shihui, Guo and Chin-Chen, Chang and Yubing, Wu and Luchen, Zhou},
-  title     = {DSteganoM: Deep Steganography for Motion Capture Data},<!-- journal   = {ICCV}, -->
+      <pre><code>@article{Reconstructing-NeRF with DoF Images,
+  author    = {Qi Wen, Gan and Yu-Wen Michael Zhang and Ruiqi Zhang},
+  title     = {Reconstructing-NeRF with DoF Images},<!-- journal   = {ICCV}, -->
   year      = {2022},
 }</code></pre>
     </div>
