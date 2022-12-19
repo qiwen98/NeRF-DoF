@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+
+
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+    content="DSteganoM: Deep Steganography for Motion Capture Data">
+  <meta name="keywords" content="DSteganoM: Deep Steganography for Motion Capture Data">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DSteganoM: Deep Steganography for Motion Capture Data</title>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TRBLTJFL16"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-TRBLTJFL16');
+  </script>
+
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  
+  <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAnxJREFUWEftVs9rE1EQ/uZt0lD0oh5qSypezE16qE2y1T+hFqzZSgVPHvSqntwVCcWsJ/WqB0+CpU2siP4JYrapCsVbvIgt1R7Ui1LSJG9kQze8DemySaQi5h3nzY/vzTdvZgh/+VAn8WfGc8Os0XEA5ecl85tqey5pHwGQoDp/Wn5nfQnrtyMA59O5a4LoPtflbKF0K68GySTvGKSJJcl8/ZljPegDCJ0BQ7fzzCgXHNNqZ+RyG9HwsHHHOAHCGJgdEG349JnjIEqDsQbCR/euVsfV1lrxbDKTdo4YCTJ0mwEU80Vzsh2AmVQ2romB9bAvUvXqcmd0eSXrB7qrYOj2GwB6IICMnlslUBzA0W4AAPjK4I1C0ZpotQ8EcPHM3UM/uTIYkwOrAEa6DO6ZbVbEzsRBim0/fX3zhycMBJBJ20tEMHoM3FIiyBccc/YfBsAok6CX3guYeU6hZ5OIFpp3ks+CkFBTwNxjBvZysBvE94vaUdgHsGcGpk9nR6IyelKAHiucHQYwGIbDsBQA2Abw3fMpwZerovqhMQ2N1Pw4ROTFfgIQzNOLjvW+7TjupIjCZqCVAu+xoQG480JKec8zFCTs5ldjlCVLs3knxA23zwdR2A2Anhrjn8hAH8D+ZcAbx27EWC02DMFv/dH5SkVUX6mymIxOAfTIpyfpVCVSaWzIreM4sAhVJ+02oqCtWLUN2oj6AIL7gG5PuRtrQ4lYIxJDamqpVn2yWLq9psouJOfHOBK95G8+cgtMdVfGhHKhaPrqpuG+XWn7WjFjPe+Yx7r5Akba/gzCaANAy0ISvhP+lwDUPnCgFq0vrFhb3VAwl8oN/YpUtaA+8BuA3gvMK1fAmgAAAABJRU5ErkJggg==">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+  <link rel="stylesheet" href="/DSteganoM/assets/main.aceab480.css">
+</head>
+
+<body>
+<!-- 
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+    <div class="navbar-menu">
+      <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+        <a class="navbar-item" href="https://keunhong.com">
+          <span class="icon">
+            <i class="fas fa-home"></i>
+          </span>
+        </a>
+
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link">
+            More Research
+          </a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="https://hypernerf.github.io">
+              HyperNeRF
+            </a>
+            <a class="navbar-item" href="https://nerfies.github.io">
+              Nerfies
+            </a>
+            <a class="navbar-item" href="https://latentfusion.github.io">
+              LatentFusion
+            </a>
+            <a class="navbar-item" href="https://photoshape.github.io">
+              PhotoShape
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </nav> -->
+
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">DSteganoM: Deep Steganography for Motion Capture Data</h1>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a href="https://qiwen98.github.io/">Qi Wen Gan</a><sup>1</sup>,</span>
+              <span class="author-block">
+                <a >Wei-Chuen Yau</a><sup>1</sup>,</span>
+              <span class="author-block">
+                <a >Y.S. Gan</a><sup>2</sup>,
+              </span>
+              <span class="author-block">
+                <a >Iftekhar Salam</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a >Shihui Guo</a><sup>3</sup>,
+              </span>
+              <span class="author-block">
+                <a >Chin-Chen Chang</a><sup>2</sup>,
+              </span>
+              <span class="author-block">
+                <a >Yubing Wu</a><sup>1</sup>
+              </span>
+              <span class="author-block">
+                <a >Luchen Zhou</a><sup>1</sup>
+              </span>
+            </div>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>1</sup>Xiamen University Malaysia, </span>
+              <span class="author-block"><sup>2</sup>Feng Chia University, </span>
+              <span class="author-block"><sup>3</sup>Xiamen University </span> 
+              
+            </div>
+
+            <!-- put the buttons here -->
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="mt-6">
+
+      </div>
+    </div>
+  </section>
+
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+  
+        <h2 class="subtitle has-text-centered">
+            <b>One-sentence summary:</b>
+          Hiding <span style="color: #38761d">Mocap Data</span> from
+          one <span style="color:  #3cd703">Skeleton Animation</span> to
+          another <span style="color: #ff9d00">Skeleton Animation</span> using
+          end-to-end <span style="color: #1155cc">Deep Neural Network.</span>
+        </h2>
+        <br/>
+        <br/>
+  
+        <h2 class="subtitle has-text-centered">         
+          <!-- <img src="./models/pics/Stegano-M Flow.png" alt="description" width="900"> -->
+          <p>⚠️</p><span class="dnerf"></span> Please click on each of the following pictures to view the corresponding sample animation.
+        </h2>
+  
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+        <h2 class="subtitle has-text-centered pb-4">
+          <b>Sample One :</b>
+        Hiding one <span style="color: #3cd703">Human Skeleton Animation</span> inside
+        another <span style="color: #ff9d00">Human Skeleton Animation</span> 
+        </h2>
+      <h2 class="subtitle is-3 has-text-centered mb-5 ">CMU - Our Method</h2>
+      <div class="columns is-centered mb-5 ">
+
+        <!-- Visual Effects. -->
+        <div class="column">
+          <div class="content">
+            <h2 class="title is-4">Cover</h2>
+            <!-- <p>
+              Using <i>nerfies</i> you can create fun visual effects. This Dolly zoom effect
+              would be impossible without nerfies since it would require going through a wall.
+            </p> -->
+            <a class="" href="./oursCMUGatedCover/"><img class="button is-link is-inverted " src="./models/pics/oursCMUGatedCover.png" style="height: max-content;"></a>
+          </div>
+        </div>
+        <!--/ Visual Effects. -->
+
+        <!-- Matting. -->
+        <div class="column">
+          <h2 class="title is-4">Secret</h2>
+          <div class="columns is-centered">
+            <div class="column content">
+              <!-- <p>
+                As a byproduct of our method, we can also solve the matting problem by ignoring
+                samples that fall outside of a bounding box during rendering.
+              </p> -->
+              <a class="" href="./oursCMUGatedSecret/"><img style="height: max-content;" class="button is-link is-inverted"  src="./models/pics/oursCMUGatedSecret.png" ></a>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Matting. -->
+        <div class="column">
+          <h2 class="title is-4">Corrupted Setting</h2>
+          <div class="columns is-centered">
+            <div class="column content">
+              <!-- <p>
+                As a byproduct of our method, we can also solve the matting problem by ignoring
+                samples that fall outside of a bounding box during rendering.
+              </p> -->
+              <a class="" href="./oursCMUGatedCorrupted/"><img class="button is-link is-inverted " src="./models/pics/oursCMUGatedCorrupted.png" style="height: max-content;"></a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!--/ end of first column -->
+      <h2 class="subtitle is-3 has-text-centered mb-5 ">CMU - SkipGated</h2>
+      <div class="columns is-centered mb-5">
+
+        <!-- Visual Effects. -->
+        <div class="column">
+          <div class="content">
+            <h2 class="title is-4">Cover</h2>
+            <!-- <p>
+              Using <i>nerfies</i> you can create fun visual effects. This Dolly zoom effect
+              would be impossible without nerfies since it would require going through a wall.
+            </p> -->
+            <a class="" href="./skipCMUGatedCover/"><img class="button is-link is-inverted " src="./models/pics/skipCMUGatedCover.png" style="height: max-content;"></a>
+          </div>
+        </div>
+        <!--/ Visual Effects. -->
+
+        <!-- Matting. -->
+        <div class="column">
+          <h2 class="title is-4">Secret</h2>
+          <div class="columns is-centered">
+            <div class="column content">
+              <!-- <p>
+                As a byproduct of our method, we can also solve the matting problem by ignoring
+                samples that fall outside of a bounding box during rendering.
+              </p> -->
+              <a class="" href="./skipCMUGatedSecret/"><img class="button is-link is-inverted " src="./models/pics/skipCMUGatedSecret.png" style="height: max-content;"></a>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Matting. -->
+        <div class="column">
+          <h2 class="title is-4">Corrupted Setting</h2>
+          <div class="columns is-centered">
+            <div class="column content">
+              <!-- <p>
+                As a byproduct of our method, we can also solve the matting problem by ignoring
+                samples that fall outside of a bounding box during rendering.
+              </p> -->
+              <a class="" href="./skipCMUGatedCorrupted/"><img class="button is-link is-inverted " src="./models/pics/skipCMUGatedCorrupted.png" style="height: max-content;"></a>
+              
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <section class="section">
+    <div class="container is-max-desktop">
+
+      <h2 class="subtitle has-text-centered pb-4">
+        <b>Sample Two:</b>
+      Hiding one <span style="color: #3cd703">Hand Skeleton Animation</span> inside
+      another <span style="color: #ff9d00">Hand Skeleton Animation</span> 
+      </h2>
+      
+      <!--/ end of first column -->
+      <h2 class="subtitle is-3 has-text-centered mb-5">MTM - Our Method</h2>
+      <div class="columns is-centered mb-5">
+
+        <!-- Visual Effects. -->
+        <div class="column">
+          <div class="content">
+            <h2 class="title is-4">Cover</h2>
+            <!-- <p>
+              Using <i>nerfies</i> you can create fun visual effects. This Dolly zoom effect
+              would be impossible without nerfies since it would require going through a wall.
+            </p> -->
+            <a class="" href="./oursMTMGatedCover/"><img class="button is-link is-inverted " src="./models/pics/oursMTMGatedCover.png" style="height: max-content;"></a>
+          </div>
+        </div>
+        <!--/ Visual Effects. -->
+
+        <!-- Matting. -->
+        <div class="column">
+          <h2 class="title is-4">Secret</h2>
+          <div class="columns is-centered">
+            <div class="column content">
+              <!-- <p>
+                As a byproduct of our method, we can also solve the matting problem by ignoring
+                samples that fall outside of a bounding box during rendering.
+              </p> -->
+
+                <a class="" href="./oursMTMGatedSecret/"><img class="button is-link is-inverted " src="./models/pics/oursMTMGatedSecret.png" style="height: max-content;"></a>
+              
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Matting. -->
+        <div class="column">
+          <h2 class="title is-4">Corrupted Setting</h2>
+          <div class="columns is-centered">
+            <div class="column content">
+              <!-- <p>
+                As a byproduct of our method, we can also solve the matting problem by ignoring
+                samples that fall outside of a bounding box during rendering.
+              </p> -->
+              <a class="" href="./oursMTMGatedCorrupted/"><img class="button is-link is-inverted " src="./models/pics/oursMTMGatedCorrupted.png" style="height: max-content;"></a>
+              
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <!--/ Matting. -->
+
+      <!--/ end of first column -->
+      <h2 class="subtitle is-3 has-text-centered mb-5">MTM - SkipGated</h2>
+      <div class="columns is-centered mb-5">
+
+        <!-- Visual Effects. -->
+        <div class="column">
+          <div class="content">
+            <h2 class="title is-4">Cover</h2>
+            <!-- <p>
+              Using <i>nerfies</i> you can create fun visual effects. This Dolly zoom effect
+              would be impossible without nerfies since it would require going through a wall.
+            </p> -->
+            <a class="" href="./skipMTMGatedCover/"><img class="button is-link is-inverted " src="./models/pics/skipMTMGatedCover.png" style="height: max-content;"></a>
+          </div>
+        </div>
+        <!--/ Visual Effects. -->
+
+        <!-- Matting. -->
+        <div class="column">
+          <h2 class="title is-4">Secret</h2>
+          <div class="columns is-centered">
+            <div class="column content">
+              <!-- <p>
+                As a byproduct of our method, we can also solve the matting problem by ignoring
+                samples that fall outside of a bounding box during rendering.
+              </p> -->
+
+                <a class="" href="./skipMTMGatedSecret/"><img class="button is-link is-inverted " src="./models/pics/skipMTMGatedSecret.png" style="height: max-content;"></a>
+              
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Matting. -->
+        <div class="column">
+          <h2 class="title is-4">Corrupted Setting</h2>
+          <div class="columns is-centered">
+            <div class="column content">
+              <!-- <p>
+                As a byproduct of our method, we can also solve the matting problem by ignoring
+                samples that fall outside of a bounding box during rendering.
+              </p> -->
+              <a class="" href="./skipMTMGatedCorrupted/"><img class="button is-link is-inverted " src="./models/pics/skipMTMGatedCorrupted.png" style="height: max-content;"></a>
+              
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <!--/ Matting. -->
+
+
+    </div>
+  </section>
+
+   <!--/<section class="section">
+    <div class="container is-max-desktop">
+
+      <h2 class="subtitle has-text-centered pb-4">
+        <b>Task Three:</b>
+      Hiding one <span style="color: #3cd703">Hand Skeleton Animation</span> inside
+      another <span style="color: #ff9d00">Human Skeleton Animation</span> 
+      </h2> 
+      
+
+      <h2 class="subtitle is-3 has-text-centered mb-5"> Our Method</h2>
+      <div class="columns is-centered mb-5">
+
+
+        <div class="column">
+          <div class="content">
+            <h2 class="title is-4">Cover</h2>
+
+            <a class="" href="./oursMixGatedCover/"><img class="button is-link is-inverted " src="./models/pics/MixedCover.png" style="height: max-content;"></a>
+          </div>
+        </div>
+
+        <div class="column">
+          <h2 class="title is-4">Secret</h2>
+          <div class="columns is-centered">
+            <div class="column content">
+
+
+                <a class="" href="./oursMixGatedSecret/"><img class="button is-link is-inverted " src="./models/pics/MixedSecret.png" style="height: max-content;"></a>
+              
+            </div>
+
+          </div>
+        </div>
+
+        <div class="column">
+          <h2 class="title is-4">Corrupted Setting</h2>
+          <div class="columns is-centered">
+            <div class="column content">
+
+              <a class="" href="./oursMixGatedCorrupted/"><img class="button is-link is-inverted " src="./models/pics/MixedCorrupted.png" style="height: max-content;"></a>
+              
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </section>-->
+
+
+
+
+
+
+
+
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <pre><code>@article{DSteganoM2022,
+  author    = {Qi Wen, Gan and Wei-Chuen, Yau and Y.S., Gan and Iftekhar, Salam and Shihui, Guo and Chin-Chen, Chang and Yubing, Wu and Luchen, Zhou},
+  title     = {DSteganoM: Deep Steganography for Motion Capture Data},<!-- journal   = {ICCV}, -->
+  year      = {2022},
+}</code></pre>
+    </div>
+  </section>
+
+
+  <footer class="footer">
+    <div class="container">
+      <div class="content has-text-centered">
+      </div>
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content">
+            <p>The format of the website is borrowed from the <a
+              href="https://nerfies.github.io/">Nerfies</a> project website</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+
+</html>
