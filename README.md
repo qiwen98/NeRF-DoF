@@ -18,8 +18,9 @@ Execute the following command line in the directory /nerf_pl/: Run the following
 
 
 Use Tensorboard to see our results.
+```
 1. tensorboard --logdir='nerf_pl/logs'
-
+```
 
 # Ours Results
 ![image info](./result.PNG)
